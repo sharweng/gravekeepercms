@@ -25,6 +25,10 @@ form {
   z-index: 1050;
 }
 
+.site-header .container-fluid {
+  z-index: 1051;
+}
+
 /* FOOTER CSS */
 :root {
   box-sizing: border-box;
@@ -58,17 +62,21 @@ form {
   z-index: 2;
 }
 
-.form-signin input[type="email"] {
+.signin-top {
   margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+.signin-middle {
+  margin-bottom: -1px;
+  border-radius: 0 !important;
+}
+.signin-bottom {
+  margin-bottom: 10px;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
 
 .lightest-grey{
   color: #d1d1d3;
@@ -99,6 +107,9 @@ form {
 }
 .a-darker-grey:hover{ 
   color: #2e2a2d;
+}
+.a-darker-grey:active{
+  font-weight: bold;
 }
 /* .border-darker-grey, .border-darker-grey:hover{
   border: #4b4a4d solid 2px;
