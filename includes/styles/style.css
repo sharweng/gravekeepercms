@@ -1,0 +1,106 @@
+body {
+  margin: 0;
+  padding-top: 73px;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 88px;
+}
+form {
+  padding: 0;
+  margin: 0;
+}
+.anchor-style{
+  border: none;
+  background: none;
+  font-size: 16px;
+}
+
+/* HEADER CSS */
+.site-header { 
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 73px;
+  z-index: 1050;
+}
+
+/* FOOTER CSS */
+:root {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  }
+.footer {
+  width: 100%;
+  padding: 2rem 0;
+  background: #3b3b3b;
+  color: white;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  position: absolute;
+  left:0;
+  right: 0;
+  bottom: 0;
+}
+
+/* SIGN IN CSS */
+.form-signin {
+  max-width: 420px;
+  padding: 1rem;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.lightest-grey{
+  color: #d1d1d3;
+}
+.lighter-grey{
+  color: #a8a8a9;
+}
+.normal-grey{
+  color: #7a7b7d;
+}
+.darker-grey{
+  color: #4b4a4d;
+}
+.darkest-grey{
+  color: #2e2a2d;
+}
+
+.btn-darker-grey{
+  background-color: #4b4a4d;
+  color: white;
+}
+.btn-darker-grey:hover{
+  background-color: #2e2a2d;
+  color: white;
+}
+.a-darker-grey{
+  color: #4b4a4d;
+}
+.a-darker-grey:hover{ 
+  color: #2e2a2d;
+}
+/* .border-darker-grey, .border-darker-grey:hover{
+  border: #4b4a4d solid 2px;
+  border-color: #4b4a4d;
+} */
