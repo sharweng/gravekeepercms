@@ -23,6 +23,20 @@ form {
   left: 0;
   height: 73px;
   z-index: 1050;
+  background-color: #d1d1d3;
+}
+
+.navbar-toggler {
+  z-index: 100;
+}
+.navbar-collapse {
+  background-color: rgba(248, 249, 250, 1);
+}
+.dropdown-item:active{
+  background-color: #3b3b3b;
+}
+.dropdown-item.active{
+  background-color: #3b3b3b;
 }
 
 .site-header .container-fluid {
