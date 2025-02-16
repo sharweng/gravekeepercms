@@ -6,13 +6,13 @@
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
       <ul class="navbar-nav mb-2 mb-lg-0">
-        <li class="nav-item ps-5">
+        <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/gravekeepercms/">Home</a>
         </li>
-        <li class="nav-item ps-5">
+        <li class="nav-item">
           <a class="nav-link" href="#">Link</a>
         </li>
-        <li class="nav-item  ps-5 dropdown">
+        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
           </a>
@@ -23,11 +23,11 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-        <li class="nav-item ps-5">
+        <li class="nav-item">
           <a class="nav-link disabled" aria-disabled="true">Disabled</a>
         </li>
       </ul>
-      <div class="d-flex align-items-center ps-5 pb-3">
+      <div class="d-flex align-items-center">
         <?php
           if(!isset($_SESSION['roleDesc'])){
               $_SESSION['roleDesc'] = "";

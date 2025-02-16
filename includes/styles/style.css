@@ -26,6 +26,13 @@ form {
   background-color: #d1d1d3;
 }
 
+@media screen and (max-width: 991px) {
+  .navbar-collapse{
+    padding-left: 48px;
+    padding-bottom: 20px;
+  }
+}
+
 .navbar-toggler {
   z-index: 100;
 }
