@@ -14,12 +14,14 @@ CREATE TABLE status(
 
 CREATE TABLE bur_type(
     type_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    bur_img text,
     description varchar(32)
 );
 
 CREATE TABLE section(
     section_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     description varchar(32),
+    sec_img text,
     sec_row INT,
     sec_col INT
 );
@@ -40,14 +42,13 @@ CREATE TABLE user (
 
 CREATE TABLE plot(
     plot_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    show_id INT NOT NULL,
     description varchar(32),
 
-    sec_id INT NOT NULL,
+    section_id INT NOT NULL,
     type_id INT NOT NULL,
     stat_id INT NOT NULL,
 
-    CONSTRAINT plot_sec_id_fk FOREIGN KEY (sec_id) REFERENCES section(sec_id) ON DELETE CASCADE,
+    CONSTRAINT plot_section_id_fk FOREIGN KEY (section_id) REFERENCES section(section_id) ON DELETE CASCADE,
     CONSTRAINT plot_type_id_fk FOREIGN KEY (type_id) REFERENCES bur_type(type_id) ON DELETE CASCADE,
     CONSTRAINT plot_stat_id_fk FOREIGN KEY (stat_id) REFERENCES status(stat_id) ON DELETE CASCADE
 );
@@ -60,3 +61,9 @@ INSERT INTO role(description)VALUES
 INSERT INTO status(description)VALUES
 ('active'),
 ('deactivated');
+
+INSERT INTO user(email, password, name, phone, role_id, stat_id)VALUES
+('marbella@gmail.com', 'd8cb704698c8d6e24e8be1f1f161c030238e0376', 'Sharwin', '09756324515', 1, 1), -- marbellasharwin
+('yago@gmail.com', '5931ac353956df19fd34edb1dafa9a350d589981', 'Alvin', '09653548254', 1, 1), -- yagoalvinsymo
+('manalo@gmail.com', '8a66bb8c84eec6ee3f0cce4d3eff2fab81e34fef', 'Jett', '09853224562', 1, 1), -- manalojettaxel
+('jumoc@gmail.com', '7dd9ff017a73bbfe2c612450e7fb298ac7804330', 'Ernz', '09354528876', 1, 1); -- jumocernzrabbi

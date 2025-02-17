@@ -32,7 +32,7 @@
           if(!isset($_SESSION['roleDesc'])){
               $_SESSION['roleDesc'] = "";
           }
-          if($_SESSION['roleDesc'] == "user"){
+          if($_SESSION['roleDesc'] == "user" || $_SESSION['roleDesc'] == "admin"){
             $sql = "SELECT email, name FROM user WHERE user_id = {$_SESSION['user_id']}";
               $DBpath = mysqli_query($conn, $sql);
               while($row = mysqli_fetch_array($DBpath)){
@@ -47,10 +47,12 @@
                           <li class=\"text-center p-2\">
                               <div class=\"fw-bold text-wrap\">$settingEmail</div>
                           </li>
-                          <li><hr class=\"dropdown-divider\"></li>
-                          <li><a class=\"dropdown-item\" href=\"#\">History</a></li>
+                          <li><hr class=\"dropdown-divider\"></li>";
+                          if($_SESSION['roleDesc'] == "admin"){
+                            echo "<li><a class=\"dropdown-item\" href=\"#\">Admin</a></li>";
+                          }
+                          echo "<li><a class=\"dropdown-item\" href=\"#\">History</a></li>
                           <li><a class=\"dropdown-item\" href=\"#\">Profile</a></li>
-                          <li><a class=\"dropdown-item\" href=\"#\">Security</a></li>
                           <li><hr class=\"dropdown-divider\"></li>
                           <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/logout.php\">Logout</a></li>
                       </ul>
