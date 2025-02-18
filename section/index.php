@@ -44,6 +44,16 @@
               <h5 class=\"card-title fw-bold text-truncate\">{$row['sec_name']}</h5>
               <p class=\"card-text\">{$row['description']}</p>
               <input type=\"hidden\" value=\"{$row['section_id']}\" name=\"section_id\">
+              <div class=\"d-flex gap-1\">
+                <form action=\"edit.php\" method=\"post\" class=\"col\">
+                <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                  <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
+                </form>
+                <form action=\"delete.php\" method=\"post\" class=\"col\">
+                  <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                  <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
+                </form>
+              </div>
             </div>
           </a>";
         }
