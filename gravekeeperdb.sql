@@ -20,6 +20,7 @@ CREATE TABLE bur_type(
 
 CREATE TABLE section(
     section_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    sec_name varchar(32),
     description varchar(32),
     sec_img text,
     sec_row INT,
