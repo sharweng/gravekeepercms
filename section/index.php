@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<div class="container-fluid px-0 mx-0 h-100">
+<div class="container-fluid px-0 mx-0">
     <!-- Right half with GraveKeeper and text -->
     <div class="col-6 d-flex flex-column align-items-center justify-content-center px-0 w-100 py-5" style="background-color: #4b4a4d;">
         <p class="fw-bold mb-0 h1" style=" color: #d1d1d3;">GraveKeeper</p>
@@ -30,11 +30,12 @@
     </div>
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
+      <img class="img-responsive" src="/gravekeepercms/section/images/heritage-map.png" alt="Chania">
         <main class="form-signin m-auto w-100">
             <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="create.php">Create</a>
         </main>
     </div>
-    <div class="container d-flex gap-2 justify-content-center">
+    <div class="container d-flex gap-2 mb-4 justify-content-center">
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){
@@ -63,8 +64,8 @@
       ?>
     </div>
 </body>
-</html>
-
 <?php
   include("../includes/footer.php");
 ?>
+</html>
+

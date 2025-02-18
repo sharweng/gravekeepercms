@@ -19,7 +19,7 @@
     </style>
 </head>
 <body>
-<div class="container-fluid px-0 mx-0 h-100 d-flex">
+<div class="container-fluid px-0 h-100 mx-0 d-flex">
     <!-- Right half with GraveKeeper and text -->
     <div class="col-6 d-flex flex-column align-items-center justify-content-center px-0" style="background-color: #4b4a4d;">
         <p class="fw-bold mb-0 h1" style=" color: #d1d1d3;">GraveKeeper</p>
