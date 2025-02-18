@@ -2,6 +2,16 @@
     session_start();
     include("../includes/config.php");
     include('../includes/header.php');
+
+    if(isset($_POST['edit'])){
+        $_SESSION['u_id'] = $_POST['section_id'];
+        $u_id = $_POST['section_id'];
+    }else{
+        $u_id = $_SESSION['u_id'];
+    }
+    $sql = "SELECT * FROM section WHERE section_id = {$u_id}";
+    $select_res = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($select_res);
 ?>
 
 <!DOCTYPE html>
@@ -33,30 +43,26 @@
                     <?php include("../includes/alert.php"); ?>
                     <div class="form-floating">
                         <input type="text" class="form-control signin-top" id="floatingInput" name="name" placeholder="Name" value="<?php
-                                            if(isset($_SESSION['name'])){
-                                                echo $_SESSION['name'];
-                                        }?>">
+                                            echo htmlspecialchars($row['sec_name'], ENT_QUOTES, 'UTF-8');
+                                        ?>">
                         <label for="floatingInput">Name</label>
                     </div>
                     <div class="form-floating">
                         <input type="text" class="form-control signin-middle" id="floatingInput" name="desc" placeholder="Description" value="<?php
-                                            if(isset($_SESSION['desc'])){
-                                                echo $_SESSION['desc'];
-                                        }?>">
+                                            echo htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8');
+                                        ?>">
                         <label for="floatingInput">Description</label>
                     </div>
                     <div class="form-floating">
                         <input type="number" class="form-control signin-middle" id="floatingInput" name="row" placeholder="row" min="1" value="<?php
-                                            if(isset($_SESSION['row'])){
-                                                echo $_SESSION['row'];
-                                        }?>">
+                                            echo $row['sec_row']
+                                        ?>">
                         <label for="floatingInput">Number of Rows</label>
                     </div>
                     <div class="form-floating">
                         <input type="number" class="form-control signin-bottom" id="floatingInput" name="col" placeholder="col" min="1" value="<?php
-                                            if(isset($_SESSION['col'])){
-                                                echo $_SESSION['col'];
-                                        }?>">
+                                            echo $row['sec_col']
+                                        ?>">
                         <label for="floatingInput">Number of Columns</label>
                     </div>
                     <input type="file" class="form-control mb-2" name="img-path" placeholder="img-path" accept="image/*">
