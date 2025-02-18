@@ -136,3 +136,13 @@ form {
   border: #4b4a4d solid 2px;
   border-color: #4b4a4d;
 } */
+
+/* ENLARGE CSS */
+
+.enlarge {
+  transition: transform 0.1s ease; 
+}
+
+.enlarge:hover {
+  transform: scale(1.02); 
+}
