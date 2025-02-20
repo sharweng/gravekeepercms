@@ -23,8 +23,7 @@ CREATE TABLE section(
     sec_name varchar(32),
     description varchar(32),
     sec_img text,
-    sec_row INT,
-    sec_col INT
+    num_plot INT
 );
 
 CREATE TABLE user (
@@ -61,7 +60,15 @@ INSERT INTO role(description)VALUES
 
 INSERT INTO status(description)VALUES
 ('active'),
-('deactivated');
+('deactivated'),
+('free'),
+('occupied');
+
+INSERT INTO bur_type(bur_img, description)VALUES
+(NULL, 'unassigned'),
+(NULL, 'normal'),
+(NULL, 'create');
+
 
 INSERT INTO user(email, password, name, phone, role_id, stat_id)VALUES
 ('marbella@gmail.com', 'd8cb704698c8d6e24e8be1f1f161c030238e0376', 'Sharwin', '09756324515', 1, 1), -- marbellasharwin
