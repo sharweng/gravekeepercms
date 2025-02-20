@@ -54,22 +54,16 @@
                         <label for="floatingInput">Description</label>
                     </div>
                     <div class="form-floating">
-                        <input type="number" class="form-control signin-middle" id="floatingInput" name="row" placeholder="row" min="1" value="<?php
-                                            echo $row['sec_row']
+                        <input type="number" class="form-control signin-bottom" id="floatingInput" name="num_plot" placeholder="num_plot" min="1" value="<?php
+                                            echo $row['num_plot']
                                         ?>">
-                        <label for="floatingInput">Number of Rows</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="number" class="form-control signin-bottom" id="floatingInput" name="col" placeholder="col" min="1" value="<?php
-                                            echo $row['sec_col']
-                                        ?>">
-                        <label for="floatingInput">Number of Columns</label>
+                        <label for="floatingInput">Number of Plots</label>
                     </div>
                     <input type="file" class="form-control mb-2" name="img-path" placeholder="img-path" accept="image/*">
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="update" type="submit">Update</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
-                    <a href="index.php" class="text-decoration-none a-darker-grey">Back</a>
+                    <a href="/gravekeepercms/section/" class="text-decoration-none a-darker-grey">Back</a>
                 </div>
             </main>
         </div>

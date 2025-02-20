@@ -4,8 +4,7 @@
 
     $_SESSION['name'] = trim($_POST['name']);
     $_SESSION['desc'] = trim($_POST['desc']);
-    $_SESSION['row'] = $_POST['row'];
-    $_SESSION['col'] = $_POST['col'];
+    $_SESSION['num_plot'] = $_POST['num_plot'];
 
     if(isset($_POST['create'])){
 
@@ -27,21 +26,12 @@
             }
         }
 
-        if(empty($_POST['row'])){
-            $_SESSION['message'] = $_SESSION['message'].'Enter the number of rows. <br>';
+        if(empty($_POST['num_plot'])){
+            $_SESSION['message'] = $_SESSION['message'].'Enter the number of plots. <br>';
         }else{
-            $row = $_POST['row'];
-            if(!preg_match("/^[1-9]\d*$/", $row)){
-                $_SESSION['message'] = $_SESSION['message'].'Number of rows must be a positive whole number. <br>';
-            }
-        }
-
-        if(empty($_POST['col'])){
-            $_SESSION['message'] = $_SESSION['message'].'Enter the number of rows. <br>';
-        }else{
-            $col = $_POST['col'];
-            if(!preg_match("/^[1-9]\d*$/", $col)){
-                $_SESSION['message'] = $_SESSION['message'].'Number of rows must be a positive whole number. <br>';
+            $num_plot = $_POST['num_plot'];
+            if(!preg_match("/^[1-9]\d*$/", $num_plot)){
+                $_SESSION['message'] = $_SESSION['message'].'Number of plots must be a positive whole number. <br>';
             }
         }
 
@@ -50,23 +40,43 @@
             header("Location: create.php");
         }
 
-        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&(preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc))&&(preg_match("/^[1-9]\d*$/", $row))
-        &&(preg_match("/^[1-9]\d*$/", $col))){
+        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&(preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc))&&
+        (preg_match("/^[1-9]\d*$/", $num_plot))){
             $source = $_FILES['img-path']['tmp_name'];
             $target = 'images/' . $_FILES['img-path']['name'];
-            echo $source.'<br>'.$target.'<br>';
             move_uploaded_file($source, $target) or die("Couldn't copy");
 
-            $sql = "INSERT INTO section (sec_name, description, sec_img, sec_row, sec_col)VALUES
-            ('$name', '$desc', '$target', $row, $col)";
-            $result = mysqli_query($conn, $sql);
-            if($result){
+            // Insert section using prepared statement
+            $sql = "INSERT INTO section (sec_name, description, sec_img, num_plot) 
+                    VALUES (?, ?, ?, ?)";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "sssi", $name, $desc, $target, $num_plot);
+            
+            if (mysqli_stmt_execute($stmt)) {
+                // Get last inserted section_id
+                $section_id = mysqli_insert_id($conn);
+                mysqli_stmt_close($stmt);
+
+                // Insert plots using prepared statement
+                $sql = "INSERT INTO plot (description, section_id, type_id, stat_id) 
+                        VALUES (?, ?, 1, 3)";
+                $stmt = mysqli_prepare($conn, $sql);
+                mysqli_stmt_bind_param($stmt, "si", $description, $section_id);
+
+                // Loop through num_plot and insert each plot
+                for ($i = 1; $i <= $num_plot; $i++) {
+                    $description = "Plot $i";
+                    mysqli_stmt_execute($stmt);
+                }
+                mysqli_stmt_close($stmt);
+
+                // Clear session variables and redirect
                 $_SESSION['name'] = '';
                 $_SESSION['desc'] = '';
-                $_SESSION['row'] = '';
-                $_SESSION['col'] = '';          
-                
+                $_SESSION['num_plot'] = '';      
                 header("Location: /gravekeepercms/section/");
+            } else {
+                die("Error inserting section: " . mysqli_error($conn));
             }
         }else{
             header("Location: create.php");
@@ -95,28 +105,27 @@
             }
         }
 
-        if(empty($_POST['row'])){
-            $_SESSION['message'] = $_SESSION['message'].'Enter the number of rows. <br>';
+        if(empty($_POST['num_plot'])){
+            $_SESSION['message'] = $_SESSION['message'].'Enter the number of plots. <br>';
         }else{
-            $row = $_POST['row'];
-            if(!preg_match("/^[1-9]\d*$/", $row)){
-                $_SESSION['message'] = $_SESSION['message'].'Number of rows must be a positive whole number. <br>';
+            $num_plot = $_POST['num_plot'];
+            if(!preg_match("/^[1-9]\d*$/", $num_plot)){
+                $_SESSION['message'] = $_SESSION['message'].'Number of plots must be a positive whole number. <br>';
             }
         }
 
-        if(empty($_POST['col'])){
-            $_SESSION['message'] = $_SESSION['message'].'Enter the number of rows. <br>';
-        }else{
-            $col = $_POST['col'];
-            if(!preg_match("/^[1-9]\d*$/", $col)){
-                $_SESSION['message'] = $_SESSION['message'].'Number of rows must be a positive whole number. <br>';
-            }
-        }
-
-        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&(preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc))&&(preg_match("/^[1-9]\d*$/", $row))
-        &&(preg_match("/^[1-9]\d*$/", $col))){
-            $ud_sql = "UPDATE section SET sec_name = '$name', description = '$desc', sec_row = $row, sec_col = $col
+        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&(preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc))
+        &&(preg_match("/^[1-9]\d*$/", $num_plot))){
+            $ud_sql = "UPDATE section SET sec_name = '$name', description = '$desc', num_plot = $num_plot
             WHERE section_id = $u_id";
+
+            $query = "SELECT num_plot FROM section WHERE section_id = ?";
+            $stmt = mysqli_prepare($conn, $query);
+            mysqli_stmt_bind_param($stmt, "i", $u_id);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_bind_result($stmt, $current_num_plot);
+            mysqli_stmt_fetch($stmt);
+            mysqli_stmt_close($stmt);
 
             if(isset($_FILES['img-path']) && $_FILES['img-path']['error'] === 0){
                 $sql = "SELECT sec_img FROM section WHERE section_id = {$u_id}";
@@ -140,17 +149,37 @@
 
                 echo $img_path.'<br>'.$target;
 
-                $ud_sql = "UPDATE section SET sec_name = '$name', description = '$desc', sec_img = '$target', sec_row = $row, sec_col = $col
+                $ud_sql = "UPDATE section SET sec_name = '$name', description = '$desc', sec_img = '$target', num_plot = $num_plot
                 WHERE section_id = $u_id";
             }
             echo $ud_sql;
+
+            if ($num_plot > $current_num_plot) {
+                // Add new plots
+                $sql = "INSERT INTO plot (description, section_id, type_id, stat_id) VALUES (?, ?, 1, 3)";
+                $stmt = mysqli_prepare($conn, $sql);
+                mysqli_stmt_bind_param($stmt, "si", $description, $u_id);
+        
+                for ($i = $current_num_plot + 1; $i <= $num_plot; $i++) {
+                    $description = "Plot $i";
+                    mysqli_stmt_execute($stmt);
+                }
+                mysqli_stmt_close($stmt);
+            } elseif ($num_plot < $current_num_plot) {
+                // Remove excess plots
+                $sql = "DELETE FROM plot WHERE section_id = ? ORDER BY plot_id DESC LIMIT ?";
+                $stmt = mysqli_prepare($conn, $sql);
+                $diff = $current_num_plot - $num_plot;
+                mysqli_stmt_bind_param($stmt, "ii", $u_id, $diff);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
             
             $result = mysqli_query($conn, $ud_sql);
             if($result){
                 $_SESSION['name'] = '';
                 $_SESSION['desc'] = '';
-                $_SESSION['row'] = '';
-                $_SESSION['col'] = '';          
+                $_SESSION['num_plot'] = '';      
                 
                 header("Location: /gravekeepercms/section/");
             }

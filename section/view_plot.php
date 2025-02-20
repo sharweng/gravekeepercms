@@ -2,8 +2,20 @@
     session_start();
     include("../includes/config.php");
     include('../includes/header.php');
+    $sec_id = $_GET['id'];
 
-    $sql = "SELECT * FROM section ";
+    $sql = "SELECT 
+    p.plot_id, 
+    p.section_id, 
+    p.description AS plot_desc, 
+    p.type_id, 
+    b.description AS type_desc,  
+    p.stat_id, 
+    s.description AS status_desc 
+    FROM plot p 
+    INNER JOIN status s ON p.stat_id = s.stat_id 
+    INNER JOIN bur_type b ON b.type_id = p.type_id 
+    WHERE p.section_id = $sec_id"; 
     $result = mysqli_query($conn, $sql);
 ?>
 
@@ -30,9 +42,8 @@
     </div>
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
-      <img class="img-responsive" src="/gravekeepercms/section/images/heritage-map.png" alt="Heritage-Map" style="height:600px">
         <main class="form-signin m-auto w-100 d-flex gap-1" >
-            <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/" style="width: 40px;"><</a>
+            <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/section/" style="width: 40px;"><</a>
             <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="create.php">Create</a>
         </main>
     </div>
@@ -40,19 +51,18 @@
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){
-          echo "<a href=\"/gravekeepercms/section/view_plot.php?id={$row['section_id']}\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
-            <img src=\"/gravekeepercms/section/{$row['sec_img']}\" class=\"card-img-top\" style\"=width: 220px; height: 220px; object-fit: cover;\">
+          echo "<a href=\"/gravekeepercms/plot/\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
             <div class=\"card-body \">
-              <h5 class=\"card-title fw-bold text-truncate\">{$row['sec_name']}</h5>
-              <p class=\"card-text\">{$row['description']}</p>
-              <input type=\"hidden\" value=\"{$row['section_id']}\" name=\"section_id\">
+              <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
+              <p class=\"card-text\">{$row['status_desc']}</p>
+              <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">
               <div class=\"d-flex gap-1\">
                 <form action=\"edit.php\" method=\"post\" class=\"col\">
-                  <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                  <input type=\"hidden\" name=\"plot_id\" value=\"{$row['p.plot_id']}\" />
                   <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
                 </form>
                 <form action=\"delete.php\" method=\"post\" class=\"col\">
-                  <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                  <input type=\"hidden\" name=\"plot_id\" value=\"{$row['p.plot_id']}\" />
                   <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
                 </form>
               </div>
@@ -66,7 +76,7 @@
     </div>
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center mb-4 ">
         <main class="form-signin m-auto w-100">
-            <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/">Back</a>
+            <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/section/">Back</a>
         </main>
     </div>
 </body>

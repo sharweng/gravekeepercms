@@ -1,55 +1,47 @@
 <?php
-    session_start();
-    include("../includes/config.php");
+session_start();
+include("../includes/config.php");
 
-    if(isset($_POST['delete'])){
-        $d_id = $_POST['section_id'];
+if(isset($_POST['delete'])){
+    $d_id = $_POST['section_id'];
 
-        $sql = "SELECT sec_img FROM section WHERE section_id = {$d_id}";
-        $select_res = mysqli_query($conn, $sql);
-        $row = mysqli_fetch_assoc($select_res);
+    // Get section image path
+    $sql = "SELECT sec_img FROM section WHERE section_id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $d_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($result);
+    mysqli_stmt_close($stmt);
+
+    if ($row) {
         $img_path = $row['sec_img'];
 
-        $sql = "SELECT COUNT(*) as num FROM section WHERE sec_img = '$img_path'";
-        $count_res = mysqli_query($conn, $sql);
-        $row = mysqli_fetch_assoc($count_res);
-        $num = $row['num'];
+        // Check if image is used by other sections
+        $sql = "SELECT COUNT(*) as num FROM section WHERE sec_img = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $img_path);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
 
-        echo is_writable($img_path);
-       
-        if($num == 1){
-           unlink($img_path);
+        if ($row['num'] == 1 && is_writable($img_path)) {
+            unlink($img_path); // Delete the image if no other section uses it
         }
-
-        $sql = "DELETE FROM section WHERE section_id = {$d_id}";
-        $d_result = mysqli_query($conn, $sql);
-
-        if($d_result){
-            header("Location: index.php");
-        }
-
-        // $d_id = $_POST['section_id'];
-        // $num = 1;
-
-        // $sql = "SELECT COUNT(sec_img) as num FROM section WHERE sec_img = ''";
-        // $count_res = mysqli_query($conn, $sql);
-        // while($row = mysqli_fetch_array($count_res)){
-        //     $num = $row['num'];
-        // }
-
-        // $sql = "SELECT sec_img FROM section WHERE section_id = {$d_id}";
-        // $select_res = mysqli_query($conn, $sql);
-        // while($row = mysqli_fetch_array($select_res)){
-        //     if($num == 1)
-        //         unlink($row['sec_img']);
-        // }
-
-        // $sql = "DELETE FROM section WHERE section_id = {$d_id}";
-        // $d_result = mysqli_query($conn, $sql);
-
-        // if($d_result){
-        //     header("Location: index.php");
-        // }
     }
 
+    // Delete section (automatically deletes plots due to ON DELETE CASCADE)
+    $sql = "DELETE FROM section WHERE section_id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $d_id);
+    $delete_result = mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    if ($delete_result) {
+        header("Location: index.php");
+    } else {
+        die("Error deleting section: " . mysqli_error($conn));
+    }
+}
 ?>
