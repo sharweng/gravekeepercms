@@ -14,7 +14,6 @@ CREATE TABLE status(
 
 CREATE TABLE bur_type(
     type_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    bur_img text,
     description varchar(32)
 );
 
@@ -88,10 +87,10 @@ INSERT INTO `status` (`stat_id`, `description`) VALUES
 (5, 'pending'),
 (6, 'confirmed');
 
-INSERT INTO bur_type(bur_img, description)VALUES
-(NULL, 'unassigned'),
-(NULL, 'buried'),
-(NULL, 'cremated');
+INSERT INTO bur_type(description)VALUES
+('unassigned'),
+('buried'),
+('cremated');
 
 INSERT INTO user(email, password, name, phone, role_id, stat_id)VALUES
 ('marbella@gmail.com', 'd8cb704698c8d6e24e8be1f1f161c030238e0376', 'Sharwin', '09756324515', 1, 1), -- marbellasharwin
