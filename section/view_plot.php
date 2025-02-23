@@ -46,8 +46,14 @@
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100 gap-1 d-grid" >
             <div class="gap-1 d-flex">
-              <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/section/" style="width: 40px;"><</a>
-              <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/plot/create.php">Create</a>
+              <?php 
+                if($_SESSION['roleDesc'] == 'admin'){
+                  echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/section/\" style=\"width: 40px;\"><</a>
+                        <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"/gravekeepercms/plot/create.php\">Create</a>";
+                }else{
+                  echo "<a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"/gravekeepercms/section/\">Back</a>";
+                }
+              ?>
             </div>
             <div>
               <?php include("../includes/alert.php"); ?>
@@ -64,18 +70,20 @@
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
               <p class=\"card-text\">{$row['status_desc']}</p>
-              <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">
-              <div class=\"d-flex gap-1\">
-                <form action=\"/gravekeepercms/plot/edit.php\" method=\"post\" class=\"col\">
-                  <input type=\"hidden\" name=\"plot_id\" value=\"{$row['plot_id']}\" />
-                  <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
-                </form>
-                <form action=\"/gravekeepercms/plot/delete.php\" method=\"post\" class=\"col\">
-                  <input type=\"hidden\" name=\"plot_id\" value=\"{$row['plot_id']}\" />
-                  <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
-                </form>
-              </div>
-            </div>
+              <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">";
+              if($_SESSION['roleDesc'] == 'admin'){
+                echo "<div class=\"d-flex gap-1\">
+                  <form action=\"/gravekeepercms/plot/edit.php\" method=\"post\" class=\"col\">
+                    <input type=\"hidden\" name=\"plot_id\" value=\"{$row['plot_id']}\" />
+                    <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
+                  </form>
+                  <form action=\"/gravekeepercms/plot/delete.php\" method=\"post\" class=\"col\">
+                    <input type=\"hidden\" name=\"plot_id\" value=\"{$row['plot_id']}\" />
+                    <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
+                  </form>
+                </div>";
+              }
+            echo "</div>
           </a>";
         }
       }else{

@@ -32,8 +32,14 @@
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
       <img class="img-responsive" src="/gravekeepercms/section/images/heritage-map.png" alt="Heritage-Map" style="height:600px">
         <main class="form-signin m-auto w-100 d-flex gap-1" >
-            <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/" style="width: 40px;"><</a>
-            <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="create.php">Create</a>
+            <?php 
+              if($_SESSION['roleDesc'] == 'admin'){
+                echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/\" style=\"width: 40px;\"><</a>
+                      <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"create.php\">Create</a>";
+              }else{
+                echo "<a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"/gravekeepercms/\">Back</a>";
+              }
+            ?>
         </main>
     </div>
     <div class="container d-flex gap-2 justify-content-center flex-wrap">
@@ -45,18 +51,20 @@
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['sec_name']}</h5>
               <p class=\"card-text\">{$row['description']}</p>
-              <input type=\"hidden\" value=\"{$row['section_id']}\" name=\"section_id\">
-              <div class=\"d-flex gap-1\">
-                <form action=\"edit.php\" method=\"post\" class=\"col\">
-                  <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
-                  <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
-                </form>
-                <form action=\"delete.php\" method=\"post\" class=\"col\">
-                  <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
-                  <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
-                </form>
-              </div>
-            </div>
+              <input type=\"hidden\" value=\"{$row['section_id']}\" name=\"section_id\">";
+              if($_SESSION['roleDesc'] == 'admin'){
+                echo "<div class=\"d-flex gap-1\">
+                        <form action=\"edit.php\" method=\"post\" class=\"col\">
+                          <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                          <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
+                        </form>
+                        <form action=\"delete.php\" method=\"post\" class=\"col\">
+                          <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                          <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
+                        </form>
+                      </div>";
+              }
+            echo "</div>
           </a>";
         }
       }else{
