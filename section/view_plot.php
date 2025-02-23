@@ -3,6 +3,10 @@
     include("../includes/config.php");
     include('../includes/header.php');
     $sec_id = $_GET['id'];
+<<<<<<< HEAD
+=======
+    $_SESSION['sec_id'] = $sec_id;
+>>>>>>> 8ecb094 (jett reservation and finished plots)
 
     $sql = "SELECT 
     p.plot_id, 
@@ -15,7 +19,12 @@
     FROM plot p 
     INNER JOIN status s ON p.stat_id = s.stat_id 
     INNER JOIN bur_type b ON b.type_id = p.type_id 
+<<<<<<< HEAD
     WHERE p.section_id = $sec_id"; 
+=======
+    WHERE p.section_id = $sec_id
+    ORDER BY CAST(SUBSTRING_INDEX(plot_desc, ' ', -1) AS UNSIGNED) ASC"; 
+>>>>>>> 8ecb094 (jett reservation and finished plots)
     $result = mysqli_query($conn, $sql);
 ?>
 
@@ -42,27 +51,54 @@
     </div>
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
+<<<<<<< HEAD
         <main class="form-signin m-auto w-100 d-flex gap-1" >
             <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/section/" style="width: 40px;"><</a>
             <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="create.php">Create</a>
         </main>
+=======
+        <main class="form-signin m-auto w-100 gap-1 d-grid" >
+            <div class="gap-1 d-flex">
+              <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/section/" style="width: 40px;"><</a>
+              <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/plot/create.php">Create</a>
+            </div>
+            <div>
+              <?php include("../includes/alert.php"); ?>
+            </div>
+            <h1 class="fw-bold text-center mt-2">Section <?php echo $_SESSION['sec_id'] ?></h1>
+        </main>
+        
+>>>>>>> 8ecb094 (jett reservation and finished plots)
     </div>
     <div class="container d-flex gap-2 justify-content-center flex-wrap">
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){
+<<<<<<< HEAD
           echo "<a href=\"/gravekeepercms/plot/\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
+=======
+          echo "<a href=\"/gravekeepercms/plot/index.php?id={$row['plot_id']}\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
+>>>>>>> 8ecb094 (jett reservation and finished plots)
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
               <p class=\"card-text\">{$row['status_desc']}</p>
               <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">
               <div class=\"d-flex gap-1\">
+<<<<<<< HEAD
                 <form action=\"edit.php\" method=\"post\" class=\"col\">
                   <input type=\"hidden\" name=\"plot_id\" value=\"{$row['p.plot_id']}\" />
                   <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
                 </form>
                 <form action=\"delete.php\" method=\"post\" class=\"col\">
                   <input type=\"hidden\" name=\"plot_id\" value=\"{$row['p.plot_id']}\" />
+=======
+                <form action=\"/gravekeepercms/plot/edit.php\" method=\"post\" class=\"col\">
+                  <input type=\"hidden\" name=\"plot_id\" value=\"{$row['plot_id']}\" />
+                  <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\">EDIT</button>
+                </form>
+                <form action=\"/gravekeepercms/plot/delete.php\" method=\"post\" class=\"col\">
+                  <input type=\"hidden\" name=\"plot_id\" value=\"{$row['plot_id']}\" />
+>>>>>>> 8ecb094 (jett reservation and finished plots)
                   <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
                 </form>
               </div>

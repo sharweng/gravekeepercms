@@ -46,13 +46,21 @@
                         <label for="floatingInput">Description</label>
                     </div>
                     <div class="form-floating">
+<<<<<<< HEAD
                         <input type="number" class="form-control signin-bottom" id="floatingInput" name="num_plot" placeholder="num_plot" min="1" value="<?php
+=======
+                        <input type="number" class="form-control signin-middle" id="floatingInput" name="num_plot" placeholder="num_plot" min="1" value="<?php
+>>>>>>> 8ecb094 (jett reservation and finished plots)
                                             if(isset($_SESSION['num_plot'])){
                                                 echo $_SESSION['num_plot'];
                                         }?>">
                         <label for="floatingInput">Number of Plots</label>
                     </div>
+<<<<<<< HEAD
                     <input type="file" class="form-control mb-2" name="img-path" placeholder="img-path" accept="image/*">
+=======
+                    <input type="file" class="form-control signin-bottom mb-2" name="img-path" placeholder="img-path" accept="image/*">
+>>>>>>> 8ecb094 (jett reservation and finished plots)
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="create" type="submit">Create</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
