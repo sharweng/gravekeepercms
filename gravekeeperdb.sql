@@ -56,8 +56,11 @@ CREATE TABLE reservation(
     reserv_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     date_placed date NOT NULL,
     date_reserved date,
+
+    stat_id INT,
     plot_id INT,
     user_id INT NOT NULL,
+    CONSTRAINT reservation_stat_id_fk FOREIGN KEY (stat_id) REFERENCES status(stat_id) ON DELETE CASCADE,
     CONSTRAINT reservation_plot_id_fk FOREIGN KEY (plot_id) REFERENCES plot(plot_id) ON DELETE CASCADE,
     CONSTRAINT reservation_user_id_fk FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
