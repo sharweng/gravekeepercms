@@ -76,24 +76,9 @@ CREATE TABLE review(
 
 
 
-
 INSERT INTO role(description)VALUES
 ('admin'),
 ('user');
-
-<<<<<<< HEAD
-INSERT INTO status(description)VALUES
-('active'),
-('deactivated'),
-('free'),
-('occupied');
-
-INSERT INTO bur_type(bur_img, description)VALUES
-(NULL, 'unassigned'),
-(NULL, 'normal'),
-(NULL, 'create');
-
-=======
 
 INSERT INTO `status` (`stat_id`, `description`) VALUES
 (1, 'active'),
@@ -107,15 +92,11 @@ INSERT INTO bur_type(bur_img, description)VALUES
 (NULL, 'unassigned'),
 (NULL, 'buried'),
 (NULL, 'cremated');
->>>>>>> 8ecb094 (jett reservation and finished plots)
 
 INSERT INTO user(email, password, name, phone, role_id, stat_id)VALUES
 ('marbella@gmail.com', 'd8cb704698c8d6e24e8be1f1f161c030238e0376', 'Sharwin', '09756324515', 1, 1), -- marbellasharwin
 ('yago@gmail.com', '5931ac353956df19fd34edb1dafa9a350d589981', 'Alvin', '09653548254', 1, 1), -- yagoalvinsymo
 ('manalo@gmail.com', '8a66bb8c84eec6ee3f0cce4d3eff2fab81e34fef', 'Jett', '09853224562', 1, 1), -- manalojettaxel
-<<<<<<< HEAD
-('jumoc@gmail.com', '7dd9ff017a73bbfe2c612450e7fb298ac7804330', 'Ernz', '09354528876', 1, 1); -- jumocernzrabbi
-=======
 ('jumoc@gmail.com', '7dd9ff017a73bbfe2c612450e7fb298ac7804330', 'Ernz', '09354528876', 1, 1); -- jumocernzrabbi
 
 INSERT INTO `section` (`section_id`, `sec_name`, `description`, `sec_img`, `num_plot`) VALUES
@@ -226,4 +207,3 @@ INSERT INTO `plot` (`plot_id`, `description`, `section_id`, `type_id`, `stat_id`
 (95, 'Plot 9', 8, 1, 3),
 (96, 'Plot 10', 8, 1, 3);
 
->>>>>>> 8ecb094 (jett reservation and finished plots)
