@@ -39,7 +39,6 @@ CREATE TABLE user (
     CONSTRAINT user_stat_id_fk FOREIGN KEY (stat_id) REFERENCES status(stat_id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE plot(
     plot_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     description varchar(32),
@@ -52,6 +51,27 @@ CREATE TABLE plot(
     CONSTRAINT plot_type_id_fk FOREIGN KEY (type_id) REFERENCES bur_type(type_id) ON DELETE CASCADE,
     CONSTRAINT plot_stat_id_fk FOREIGN KEY (stat_id) REFERENCES status(stat_id) ON DELETE CASCADE
 );
+
+CREATE TABLE reservation(
+    reserv_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    date_placed date NOT NULL,
+    date_reserved date,
+    plot_id INT,
+    user_id INT NOT NULL,
+    CONSTRAINT reservation_plot_id_fk FOREIGN KEY (plot_id) REFERENCES plot(plot_id) ON DELETE CASCADE,
+    CONSTRAINT reservation_user_id_fk FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE review(
+    rev_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    rev_num INT,
+    rev_msg TEXT,
+
+    user_id INT NOT NULL,
+    CONSTRAINT review_user_id FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+
 
 
 INSERT INTO role(description)VALUES
