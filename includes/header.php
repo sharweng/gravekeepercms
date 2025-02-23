@@ -57,7 +57,7 @@
                             echo "<li><a class=\"dropdown-item\" href=\"#\">Admin</a></li>";
                           }
                           echo "<li><a class=\"dropdown-item\" href=\"#\">History</a></li>
-                          <li><a class=\"dropdown-item\" href=\"#\">Profile</a></li>
+                          <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/profile.php\">Profile</a></li>
                           <li><hr class=\"dropdown-divider\"></li>
                           <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/logout.php\">Logout</a></li>
                       </ul>
