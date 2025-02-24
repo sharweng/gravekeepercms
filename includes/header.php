@@ -15,7 +15,7 @@
           <a class="nav-link active" aria-current="page" href="/gravekeepercms/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="#">Reviews</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,9 +34,23 @@
       </ul>
       <div class="d-flex align-items-center">
         <?php
+          if($_SESSION['roleDesc'] == "admin"){
+            echo "<div class=\"nav-item dropdown me-3\">
+                <a class=\"nav-link dropdown-toggle \" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">
+                    Admin
+                </a>
+                <ul class=\"dropdown-menu\">
+                    <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/\">User</a></li>
+                    <li><a class=\"dropdown-item\" href=\"/gravekeepercms/section/\">Section</a></li>
+                    <li><a class=\"dropdown-item\" href=\"/gravekeepercms/admin/reservation.php\">Reservation</a></li>
+                    <li><a class=\"dropdown-item\" href=\"/gravekeepercms/review/\">Review</a></li>
+                </ul>
+            </div>";
+          }
           if(!isset($_SESSION['roleDesc'])){
               $_SESSION['roleDesc'] = "";
           }
+          
           if($_SESSION['roleDesc'] == "user" || $_SESSION['roleDesc'] == "admin"){
             $sql = "SELECT email, name FROM user WHERE user_id = {$_SESSION['user_id']}";
               $DBpath = mysqli_query($conn, $sql);
@@ -53,11 +67,10 @@
                               <div class=\"fw-bold text-wrap\">$settingEmail</div>
                           </li>
                           <li><hr class=\"dropdown-divider\"></li>";
-                          if($_SESSION['roleDesc'] == "admin"){
-                            echo "<li><a class=\"dropdown-item\" href=\"#\">Admin</a></li>";
-                          }
-                          echo "<li><a class=\"dropdown-item\" href=\"#\">History</a></li>
+                          echo "
                           <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/profile.php\">Profile</a></li>
+                          <li><a class=\"dropdown-item\" href=\"/gravekeepercms/reservation.php\">Reservations</a></li>
+                          <li><a class=\"dropdown-item\" href=\"/gravekeepercms/review/index.php?mode=user\">Reviews</a></li>
                           <li><hr class=\"dropdown-divider\"></li>
                           <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/logout.php\">Logout</a></li>
                       </ul>
