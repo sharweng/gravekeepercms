@@ -31,63 +31,54 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
 <body>
 <div class="container mt-4">
     <h2 class="text-center fw-bold">Manage Reservations</h2>
-    <table class="table table-striped table-bordered mt-3">
-        <thead class="table-dark">
-            <tr>
-                <th>#</th>
-                <th>User</th>
-                <th>Email</th>
-                <th>Section</th>
-                <th>Plot</th>
-                <th>Date Placed</th>
-                <th>Date Reserved</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($reserv_result) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($reserv_result)): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($row['reserv_id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['user_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                        <td><?php echo htmlspecialchars($row['sec_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['plot_desc']); ?></td>
-                        <td><?php echo htmlspecialchars($row['date_placed']); ?></td>
-                        <td><?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></td>
-                        <td>
-                            <span class="badge 
-                                <?php 
-                                echo ($row['status'] === 'pending') ? 'bg-warning' : 
-                                     (($row['status'] === 'confirmed') ? 'bg-success' : 'bg-secondary'); 
-                                ?>">
-                                <?php echo htmlspecialchars($row['status']); ?>
-                            </span>
-                        </td>
-                        <td>
+
+    <div class="row">
+        <?php if (mysqli_num_rows($reserv_result) > 0): ?>
+            <?php while ($row = mysqli_fetch_assoc($reserv_result)): ?>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo htmlspecialchars($row['user_name']); ?></h5>
+                            <p class="card-text"><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
+                            <p class="card-text"><strong>Section:</strong> <?php echo htmlspecialchars($row['sec_name']); ?></p>
+                            <p class="card-text"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
+                            <p class="card-text"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
+                            <p class="card-text"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>
+                            <p class="card-text">
+                                <span class="badge 
+                                    <?php 
+                                    echo ($row['status'] === 'pending') ? 'bg-warning' : 
+                                         (($row['status'] === 'confirmed') ? 'bg-success' : 'bg-secondary'); 
+                                    ?>">
+                                    <?php echo htmlspecialchars($row['status']); ?>
+                                </span>
+                            </p>
+
                             <?php if ($row['status'] === 'pending'): ?>
-                                <form action="admin_update_reservation.php" method="POST" style="display:inline;">
+                                <form action="update_reservation.php" method="POST" class="d-flex gap-2">
                                     <input type="hidden" name="reserv_id" value="<?php echo $row['reserv_id']; ?>">
-                                    <button type="submit" name="confirm" class="btn btn-success btn-sm">
+                                    <button type="submit" name="confirm" class="btn btn-success btn-sm w-100">
                                         Confirm
                                     </button>
-                                    <button type="submit" name="cancel" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to cancel this reservation?');">
+                                    <button type="submit" name="cancel" class="btn btn-danger btn-sm w-100" onclick="return confirm('Are you sure you want to cancel this reservation?');">
                                         Cancel
                                     </button>
                                 </form>
                             <?php else: ?>
-                                <button class="btn btn-secondary btn-sm" disabled>No Action</button>
+                                <button class="btn btn-secondary btn-sm w-100 mt-2" disabled>No Action</button>
                             <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr><td colspan="9" class="text-center">No reservations found.</td></tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-    <a href="\gravekeepercms\index.php" class="btn btn-primary">Return</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <div class="col-12 text-center">
+                <p>No reservations found.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <a href="\gravekeepercms\index.php" class="btn btn-primary mt-3">Return</a>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>

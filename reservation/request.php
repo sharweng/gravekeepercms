@@ -9,11 +9,17 @@
     }
 
     $section_id = $_POST['section_id'];
+
+    // Fetch section details
     $sql = "SELECT * FROM section WHERE section_id = '$section_id'";
     $result = mysqli_query($conn, $sql);
     $section = mysqli_fetch_assoc($result);
 
-    $plot_sql = "SELECT * FROM plot WHERE section_id = '$section_id'";
+    // Fetch plots with their status
+    $plot_sql = "SELECT p.*, s.description AS status_desc 
+                 FROM plot p
+                 JOIN status s ON p.stat_id = s.stat_id
+                 WHERE p.section_id = '$section_id'";
     $plot_result = mysqli_query($conn, $plot_sql);
 ?>
 
@@ -42,15 +48,26 @@
     </div>
 
     <h4 class="mt-4">Available Plots</h4>
-    <div class="list-group">
+    <div class="d-flex flex-wrap gap-3">
         <?php while ($plot = mysqli_fetch_assoc($plot_result)) { ?>
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <span><?php echo $plot['description']; ?></span>
-                <form action="confirm_reservation.php" method="post">
-                    <input type="hidden" name="plot_id" value="<?php echo $plot['plot_id']; ?>">
-                    <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
-                    <button type="submit" class="btn btn-primary btn-sm">Reserve</button>
-                </form>
+            <div class="p-3 border rounded shadow-sm">
+                <strong><?php echo htmlspecialchars($plot['description']); ?></strong>
+                <p class="mb-2">
+                    <span class="badge 
+                        <?php echo ($plot['status_desc'] == 'occupied') ? 'bg-danger' : 'bg-success'; ?>">
+                        <?php echo ucfirst($plot['status_desc']); ?>
+                    </span>
+                </p>
+                
+                <?php if ($plot['status_desc'] !== 'occupied') { ?>
+                    <form action="confirm_reservation.php" method="post">
+                        <input type="hidden" name="plot_id" value="<?php echo $plot['plot_id']; ?>">
+                        <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
+                        <button type="submit" class="btn btn-primary btn-sm">Reserve</button>
+                    </form>
+                <?php } else { ?>
+                    <button class="btn btn-secondary btn-sm" disabled>Unavailable</button>
+                <?php } ?>
             </div>
         <?php } ?>
     </div>
