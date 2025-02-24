@@ -11,7 +11,7 @@ $reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, s.description
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
                JOIN user u ON r.user_id = u.user_id
-               ORDER BY r.date_placed DESC";
+               ORDER BY r.reserv_id DESC";
 
 $reserv_result = mysqli_query($conn, $reserv_sql);
 ?>

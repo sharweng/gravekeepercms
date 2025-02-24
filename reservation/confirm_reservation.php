@@ -3,13 +3,13 @@ session_start();
 include("../includes/config.php");
 include('../includes/header.php');
 
-if (!isset($_POST['plot_id']) || !isset($_POST['section_id'])) {
+if (!isset($_GET['plot']) || !isset($_GET['section'])) {
     echo "<script>alert('Invalid request.'); window.location.href='index.php';</script>";
     exit();
 }
 
-$plot_id = $_POST['plot_id'];
-$section_id = $_POST['section_id'];
+$plot_id = $_GET['plot'];
+$section_id = $_GET['section'];
 
 // Ensure user is logged in
 $user_id = $_SESSION['user_id'] ?? null;
@@ -52,11 +52,9 @@ $plot = mysqli_fetch_assoc($plot_result);
 <div class="container mt-4">
     <h2 class="text-center fw-bold">Reservation Confirmation</h2>
     <div class="card">
-        <img src="/gravekeepercms/section/<?php echo htmlspecialchars($section['sec_img']); ?>" class="card-img-top" alt="Section Image" style="height: 300px; object-fit: cover;">
         <div class="card-body">
             <h3 class="card-title"><?php echo htmlspecialchars($section['sec_name']); ?></h3>
             <p class="card-text"><?php echo htmlspecialchars($section['description']); ?></p>
-            <hr>
             <h4>Plot Details</h4>
             <p><strong>Description:</strong> <?php echo htmlspecialchars($plot['description']); ?></p>
             <p><strong>Location:</strong> <?php echo htmlspecialchars($plot['location'] ?? 'Not specified'); ?></p>
@@ -73,7 +71,7 @@ $plot = mysqli_fetch_assoc($plot_result);
         <button type="submit" class="btn btn-success mt-3">Confirm Reservation</button>
     </form>
 
-    <a href="/gravekeepercms/reservation/" class="btn btn-primary mt-3">Return</a>
+    <a href="/gravekeepercms/section/" class="btn btn-primary mt-3">Return</a>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>

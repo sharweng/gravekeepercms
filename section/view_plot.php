@@ -6,19 +6,20 @@
     $_SESSION['sec_id'] = $sec_id;
 
     $sql = "SELECT 
-    p.plot_id, 
-    p.section_id, 
-    p.description AS plot_desc, 
-    p.type_id, 
-    b.description AS type_desc,  
-    p.stat_id, 
-    s.description AS status_desc 
-    FROM plot p 
-    INNER JOIN status s ON p.stat_id = s.stat_id 
-    INNER JOIN bur_type b ON b.type_id = p.type_id 
-    WHERE p.section_id = $sec_id
-    ORDER BY CAST(SUBSTRING_INDEX(plot_desc, ' ', -1) AS UNSIGNED) ASC"; 
+      p.plot_id, 
+      p.section_id, 
+      p.description AS plot_desc, 
+      p.type_id, 
+      b.description AS type_desc,  
+      p.stat_id, 
+      s.description AS status_desc 
+      FROM plot p 
+      INNER JOIN status s ON p.stat_id = s.stat_id 
+      INNER JOIN bur_type b ON b.type_id = p.type_id 
+      WHERE p.section_id = $sec_id
+      ORDER BY CAST(SUBSTRING_INDEX(plot_desc, ' ', -1) AS UNSIGNED) ASC"; 
     $result = mysqli_query($conn, $sql);
+
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +70,6 @@
           echo "<a href=\"/gravekeepercms/plot/index.php?id={$row['plot_id']}\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
-              <p class=\"card-text\">{$row['status_desc']}</p>
               <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">";
               if($_SESSION['roleDesc'] == 'admin'){
                 echo "<div class=\"d-flex gap-1\">
@@ -82,7 +82,25 @@
                     <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
                   </form>
                 </div>";
-              }
+              }?>
+              <p class="mb-1">
+                    <span class="badge w-100 
+                        <?php echo ($row['status_desc'] == 'occupied') ? 'bg-danger' : 'bg-success'; ?>">
+                        <?php echo ucfirst($row['status_desc']); ?>
+                    </span>
+                </p>
+                
+                <?php if ($row['status_desc'] !== 'occupied') { ?>
+                    <form action="/gravekeepercms/reservation/confirm_reservation.php?section=<?php echo $_SESSION['sec_id'] ?>&plot=<?php echo $row['plot_id'] ?>" method="post">
+                        <input type="hidden" name="plot_id" value="<?php echo $row['plot_id']; ?>">
+                        <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
+                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">RESERVE</button>
+                    </form>
+                <?php } else { ?>
+                    <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>Unavailable</button>
+                <?php } ?>
+              <?php
+              
             echo "</div>
           </a>";
         }

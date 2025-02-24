@@ -3,7 +3,7 @@ session_start();
 include("../includes/config.php");
 
 if (!isset($_POST['plot_id']) || !isset($_POST['section_id']) || !isset($_POST['user_id'])) {
-    echo "<script>alert('Invalid request.'); window.location.href='index.php';</script>";
+    echo "<script>alert('Invalid request.'); window.location.href='/gravekeepercms/section/;</script>";
     exit();
 }
 
@@ -16,8 +16,8 @@ $reservation_sql = "INSERT INTO reservation (date_placed, date_reserved, stat_id
                     VALUES (NOW(), NULL, 5, '$section_id', '$plot_id', '$user_id')";
 
 if (mysqli_query($conn, $reservation_sql)) {
-    echo "<script>alert('Reservation successful! Status: Pending'); window.location.href='index.php';</script>";
+    echo "<script>alert('Reservation successful! Status: Pending'); window.location.href='/gravekeepercms/section/';</script>";
 } else {
-    echo "<script>alert('Reservation failed. Please try again.'); window.location.href='index.php';</script>";
+    echo "<script>alert('Reservation failed. Please try again.'); window.location.href='/gravekeepercms/section/';</script>";
 }
 ?>
