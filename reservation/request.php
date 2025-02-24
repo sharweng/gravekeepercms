@@ -72,7 +72,7 @@
         <?php } ?>
     </div>
 
-    <a href="index.php" class="btn btn-secondary mt-3">Back</a>
+    <a href="/gravekeepercms/reservation/" class="btn btn-secondary mt-3">Back</a>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>

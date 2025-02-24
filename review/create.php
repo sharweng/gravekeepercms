@@ -76,7 +76,11 @@
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="submit-review" type="submit">Save Review</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
-                    <a href="/gravekeepercms/review/" class="text-decoration-none a-darker-grey">Back</a>
+                    <a <?php if($mode == 'user')
+                            echo "href=\"/gravekeepercms/review/index.php?mode=user\"";
+                        else
+                            echo "href=\"/gravekeepercms/review/\"";
+                        ?> class="text-decoration-none a-darker-grey">Back</a>
                 </div>
             </main>
         </div>

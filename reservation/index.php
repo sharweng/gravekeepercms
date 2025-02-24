@@ -3,6 +3,7 @@
     include("../includes/config.php");
     include('../includes/header.php');
 
+    
    
     $sql = "SELECT s.*, 
                    (SELECT COUNT(*) FROM plot p WHERE p.section_id = s.section_id AND p.stat_id = (SELECT stat_id FROM status WHERE description = 'occupied')) AS occupied_plots,

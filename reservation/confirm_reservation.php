@@ -73,7 +73,7 @@ $plot = mysqli_fetch_assoc($plot_result);
         <button type="submit" class="btn btn-success mt-3">Confirm Reservation</button>
     </form>
 
-    <a href="index.php" class="btn btn-primary mt-3">Return</a>
+    <a href="/gravekeepercms/reservation/" class="btn btn-primary mt-3">Return</a>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>

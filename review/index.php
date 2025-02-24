@@ -117,7 +117,7 @@
     </div>
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center mb-4 ">
         <main class="form-signin m-auto w-100">
-            <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/review/">Back</a>
+            <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/">Back</a>
         </main>
     </div>
 </body>

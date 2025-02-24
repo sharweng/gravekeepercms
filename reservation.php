@@ -79,7 +79,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
         <?php endif; ?>
     </div>
 
-    <a href="index.php" class="btn btn-primary mt-3">Return Home</a>
+    <a href="/gravekeepercms/" class="btn btn-primary mt-3">Return Home</a>
 </div>
 </body>
 <?php include("includes/footer.php"); ?>
