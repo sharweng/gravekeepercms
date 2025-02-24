@@ -67,7 +67,7 @@
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){
-          echo "<a href=\"/gravekeepercms/plot/index.php?id={$row['plot_id']}\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
+          echo "<div class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\"  data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['plot_id']}\">
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
               <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">";
@@ -82,7 +82,7 @@
                     <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">DELETE</button>
                   </form>
                 </div>";
-              }?>
+              }else{?>
               <p class="mb-1">
                     <span class="badge w-100 
                         <?php echo ($row['status_desc'] == 'occupied') ? 'bg-danger' : 'bg-success'; ?>">
@@ -98,11 +98,30 @@
                     </form>
                 <?php } else { ?>
                     <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>Unavailable</button>
-                <?php } ?>
+                <?php }
+                } ?>
               <?php
               
             echo "</div>
-          </a>";
+          </div>";
+          echo "<div class=\"modal fade\" id=\"exampleModal{$row['plot_id']}\" tabindex=\"-1\" aria-labelledby=\"exampleModalLabel\" aria-hidden=\"true\">
+                <div class=\"modal-dialog modal-dialog-centered modal-sm\">
+                    <div class=\"modal-content\">
+                        <div class=\"modal-header\">
+                            <h1 class=\"modal-title fw-bold text-wrap fs-5\" id=\"exampleModalLabel\">{$row['plot_desc']}</h1>
+                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
+                        </div>
+                        <div class=\"modal-body\">
+                            <b>Section:</b> {$sec_id} <br>
+                            <b>Burial Type:</b> {$row['type_desc']}<br>
+                            <b>Status:</b> {$row['status_desc']}
+                        </div>
+                        <div class=\"modal-footer\">
+                            <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>";
         }
       }else{
         echo "<p class=\"text-center mt-2 fw-bold\">No sections found.</p>";
