@@ -1,7 +1,10 @@
 <?php
     session_start();
     include("../includes/config.php");
-    include('../includes/notAdminRedirect.php');
+    
+    $mode = $_GET['mode'];
+    if($mode != 'user')
+        include('../includes/notAdminRedirect.php');
 
     $rev_id = $_POST['rev_id'];
     $sql = "DELETE FROM review WHERE rev_id = ?";
@@ -11,6 +14,9 @@
     mysqli_stmt_close($stmt);
 
     if ($delete_result) {
-        header("Location: /gravekeepercms/review/");
+        if($mode == 'user')
+            header("Location: /gravekeepercms/review/index.php?mode=user");
+        else
+            header("Location: /gravekeepercms/review/");
     } 
 ?>

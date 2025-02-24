@@ -3,19 +3,25 @@
     include("../includes/config.php");
     include('../includes/header.php');
 
+    $mode = $_GET['mode'];
+    if($mode != 'user')
+        include('../includes/notAdminRedirect.php');
+    
     $sql = "SELECT r.rev_id, r.user_id, r.rev_msg, r.rev_num, u.email FROM review r INNER JOIN user u ON u.user_id = r.user_id";
+
+    if($mode == 'user'){
+        $sql = $sql." WHERE u.user_id = {$_SESSION['user_id']}";
+    }
     $result = mysqli_query($conn, $sql);
 
-    function truncateText($text, $maxLength = 46) {
+    function truncateText($text, $maxLength = 24) {
         if (strlen($text) > $maxLength) {
             return substr($text, 0, $maxLength) . "...";
         }
         return $text;
     }
 
-    $rev_id = $_GET['id'];
-    echo $rev_id;
-
+    
 ?>
 
 <!DOCTYPE html>
@@ -43,12 +49,12 @@
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100 d-flex gap-1" >
             <?php 
-              if($_SESSION['roleDesc'] == 'admin'){
                 echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/\" style=\"width: 40px;\"><</a>
-                      <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"create.php\">Create</a>";
-              }else{
-                echo "<a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"/gravekeepercms/\">Back</a>";
-              }
+                      <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" "; 
+                        if($mode == 'user')
+                            echo "href=\"create.php?mode=user\">Create</a>";
+                        else
+                            echo "href=\"create.php\">Create</a>";
             ?>
         </main>
     </div>
@@ -62,13 +68,23 @@
               <p class=\"card-text\"><b>Rating: </b>{$row['rev_num']}</p>
               <p class=\"card-text\">"; echo truncateText($row['rev_msg']); echo "</p>
               <input type=\"hidden\" value=\"{$row['rev_id']}\" name=\"rev_id\">";
-              if($_SESSION['roleDesc'] == 'admin'){
+              if(($_SESSION['roleDesc'] == 'admin')||($mode == 'user')){
                 echo "<div class=\"d-flex gap-1\">
-                        <form action=\"edit.php\" method=\"post\" class=\"col\">
+                        <form "; 
+                            if($mode == 'user')
+                                echo "action=\"edit.php?mode=user\" "; 
+                            else
+                                echo "action=\"edit.php\" "; 
+                        echo "method=\"post\" class=\"col\">
                           <input type=\"hidden\" name=\"rev_id\" value=\"{$row['rev_id']}\" />
                           <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"edit\" onclick=\"event.stopPropagation();\">EDIT</button>
                         </form>
-                        <form action=\"delete.php\" method=\"post\" class=\"col\">
+                        <form "; 
+                            if($mode == 'user')
+                                echo "action=\"delete.php?mode=user\" "; 
+                            else
+                                echo "action=\"delete.php\" "; 
+                        echo "method=\"post\" class=\"col\">
                           <input type=\"hidden\" name=\"rev_id\" value=\"{$row['rev_id']}\" />
                           <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\" onclick=\"event.stopPropagation();\">DELETE</button>
                         </form>

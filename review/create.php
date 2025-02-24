@@ -3,8 +3,13 @@
     include("../includes/config.php");
     include('../includes/header.php');
 
+    $mode = $_GET['mode'];
+    if($mode != 'user')
+        include('../includes/notAdminRedirect.php');
+
     $sql = "SELECT * FROM user";
     $result = mysqli_query($conn, $sql);
+    
 ?>
 
 <!DOCTYPE html>
@@ -31,10 +36,14 @@
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100">
-                <form method="post" action="store.php">
+                <form method="post" <?php if($mode == 'user')
+                            echo "action=\"store.php?mode=user\"";
+                        else
+                            echo "action=\"store.php\"";
+                        ?>>
                     <h1 class="h1 mb-3 fw-bold text-center">Create Review</h1>
                     <?php include("../includes/alert.php"); 
-                    if($_SESSION['roleDesc'] == 'admin'){
+                    if(($_SESSION['roleDesc'] == 'admin')&&($mode != 'user')){
                         echo "<div class=\"form-floating\">
                             <select class=\"form-select signin-top\" name=\"user_id\">";
                             while($row = mysqli_fetch_array($result)){

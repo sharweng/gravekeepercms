@@ -3,7 +3,9 @@
     ini_set('display_errors', 1);
     session_start();
     include('../includes/config.php');
-    include('../includes/notUserRedirect.php');
+    $mode = $_GET['mode'];
+    if($mode != 'user')
+        include('../includes/notAdminRedirect.php');
 
     if(isset($_POST['submit-review'])){
         $user_id = $_POST['user_id'];
@@ -27,7 +29,10 @@
         $result = $stmt->execute();
 
         if($result){
-            header("Location: /gravekeepercms/review/");
+            if($mode == 'user')
+                header("Location: /gravekeepercms/review/index.php?mode=user");
+            else
+                header("Location: /gravekeepercms/review/");
             exit();
         }
     }
@@ -55,7 +60,10 @@
         $result = $stmt->execute();
 
         if($result){
-            header("Location: /gravekeepercms/review/");
+            if($mode == 'user')
+                header("Location: /gravekeepercms/review/index.php?mode=user");
+            else
+                header("Location: /gravekeepercms/review/");
             exit();
         }
     }
