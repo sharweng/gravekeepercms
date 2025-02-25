@@ -41,6 +41,7 @@
                 </a>
                 <ul class=\"dropdown-menu\">
                     <li><a class=\"dropdown-item\" href=\"/gravekeepercms/user/\">User</a></li>
+                    <li><a class=\"dropdown-item\" href=\"/gravekeepercms/deceased/\">Deceased</a></li>
                     <li><a class=\"dropdown-item\" href=\"/gravekeepercms/section/\">Section</a></li>
                     <li><a class=\"dropdown-item\" href=\"/gravekeepercms/admin/reservation.php\">Reservation</a></li>
                     <li><a class=\"dropdown-item\" href=\"/gravekeepercms/review/\">Review</a></li>
