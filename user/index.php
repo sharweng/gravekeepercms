@@ -10,9 +10,16 @@
     $sql = "SELECT u.user_id, u.email, u.name, u.phone, u.role_id, u.stat_id, 
         r.description AS role_desc, s.description AS stat_desc
         FROM user u INNER JOIN role r ON u.role_id = r.role_id
-        INNER JOIN status s ON u.stat_id = s.stat_id
-        ORDER BY u.user_id ASC";
+        INNER JOIN status s ON u.stat_id = s.stat_id";
 
+    if(isset($_GET['search']))
+        $keyword = strtolower(trim($_GET['search']));
+
+    if($keyword){
+        $sql = $sql . " WHERE u.email LIKE '%{$keyword}%'";
+    }
+    
+    $sql = $sql." ORDER BY u.user_id ASC";
     // if($mode == 'user'){
     //     $sql = $sql." WHERE u.user_id = {$_SESSION['user_id']}";
     // }
@@ -49,13 +56,21 @@
     </div>
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
-        <main class="form-signin m-auto w-100 d-flex gap-1" >
-            <?php 
-                echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/\" style=\"width: 40px;\"><</a>
-                      <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" "; 
-                        echo "href=\"register.php?mode=admin\">Create</a>";
-            ?>
+        <main class="form-signin m-auto w-100 d-grid gap-2" >
+            <div class="d-flex w-100 gap-1">
+                <?php 
+                    echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/\" style=\"width: 40px;\"><</a>
+                        <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" "; 
+                            echo "href=\"register.php?mode=admin\">Create</a>";
+                ?>
+            </div>
+            <form class="d-flex gap-1" method="get" action="">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
         </main>
+        
+            
     </div>
     <div class="container d-flex gap-2 justify-content-center flex-wrap">
     <?php 
