@@ -49,12 +49,6 @@
                         <label for="floatingInput">Name</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control signin-middle" id="floatingInput" name="desc" placeholder="Description" value="<?php
-                                            echo htmlspecialchars($row['description'], ENT_QUOTES, 'UTF-8');
-                                        ?>">
-                        <label for="floatingInput">Description</label>
-                    </div>
-                    <div class="form-floating">
                         <input type="number" class="form-control signin-middle" id="floatingInput" name="num_plot" placeholder="num_plot" min="1" value="<?php
                                             echo $row['num_plot']
                                         ?>">

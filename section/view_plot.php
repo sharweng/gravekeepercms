@@ -9,13 +9,10 @@
       p.plot_id, 
       p.section_id, 
       p.description AS plot_desc, 
-      p.type_id, 
-      b.description AS type_desc,  
       p.stat_id, 
       s.description AS status_desc 
       FROM plot p 
       INNER JOIN status s ON p.stat_id = s.stat_id 
-      INNER JOIN bur_type b ON b.type_id = p.type_id 
       WHERE p.section_id = $sec_id
       ORDER BY CAST(SUBSTRING_INDEX(plot_desc, ' ', -1) AS UNSIGNED) ASC"; 
     $result = mysqli_query($conn, $sql);
@@ -113,7 +110,6 @@
                         </div>
                         <div class=\"modal-body\">
                             <b>Section:</b> {$sec_id} <br>
-                            <b>Burial Type:</b> {$row['type_desc']}<br>
                             <b>Status:</b> {$row['status_desc']}
                         </div>
                         <div class=\"modal-footer\">

@@ -40,13 +40,6 @@
                         <label for="floatingInput">Name</label>
                     </div>
                     <div class="form-floating">
-                        <input type="text" class="form-control signin-middle" id="floatingInput" name="desc" placeholder="Description" value="<?php
-                                            if(isset($_SESSION['desc'])){
-                                                echo $_SESSION['desc'];
-                                        }?>">
-                        <label for="floatingInput">Description</label>
-                    </div>
-                    <div class="form-floating">
                         <input type="number" class="form-control signin-middle" id="floatingInput" name="num_plot" placeholder="num_plot" min="1" value="<?php
                                             if(isset($_SESSION['num_plot'])){
                                                 echo $_SESSION['num_plot'];

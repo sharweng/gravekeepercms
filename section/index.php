@@ -46,11 +46,10 @@
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){
-          echo "<a href=\"/gravekeepercms/section/view_plot.php?id={$row['section_id']}\" class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
+          echo "<a href=\"/gravekeepercms/section/view_plot.php?id={$row['section_id']}\" class=\" text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
             <img src=\"/gravekeepercms/section/{$row['sec_img']}\" class=\"card-img-top\" style\"=width: 220px; height: 220px; object-fit: cover;\">
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['sec_name']}</h5>
-              <p class=\"card-text\">{$row['description']}</p>
               <input type=\"hidden\" value=\"{$row['section_id']}\" name=\"section_id\">";
               if($_SESSION['roleDesc'] == 'admin'){
                 echo "<div class=\"d-flex gap-1\">

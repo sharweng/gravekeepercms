@@ -1,10 +1,11 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
     session_start();
     include("../includes/config.php");
     include('../includes/notAdminRedirect.php');
 
     $_SESSION['name'] = trim($_POST['name']);
-    $_SESSION['desc'] = trim($_POST['desc']);
     $_SESSION['num_plot'] = $_POST['num_plot'];
 
     if(isset($_POST['create'])){
@@ -15,15 +16,6 @@
             $name = trim($_POST['name']);
             if(!preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name)){
                 $_SESSION['message'] = $_SESSION['message'].'Name must only contain up to 50 letters, numbers, spaces, hyphens, and underscores. <br>';
-            }
-        }
-
-        if(empty($_POST['desc'])){
-            $_SESSION['message'] = $_SESSION['message'].'Enter a descripstion. <br>';
-        }else{
-            $desc = trim($_POST['desc']);
-            if(!preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc)){
-                $_SESSION['message'] = $_SESSION['message'].'Description must only contain up to 50 letters, numbers, spaces, hyphens, and underscores. <br>';
             }
         }
 
@@ -41,17 +33,17 @@
             header("Location: create.php");
         }
 
-        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&(preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc))&&
+        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&
         (preg_match("/^[1-9]\d*$/", $num_plot))){
             $source = $_FILES['img-path']['tmp_name'];
             $target = 'images/' . $_FILES['img-path']['name'];
             move_uploaded_file($source, $target) or die("Couldn't copy");
 
             // Insert section using prepared statement
-            $sql = "INSERT INTO section (sec_name, description, sec_img, num_plot) 
-                    VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO section (sec_name, sec_img, num_plot) 
+                    VALUES (?, ?, ?)";
             $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "sssi", $name, $desc, $target, $num_plot);
+            mysqli_stmt_bind_param($stmt, "ssi", $name, $target, $num_plot);
             
             if (mysqli_stmt_execute($stmt)) {
                 // Get last inserted section_id
@@ -59,8 +51,8 @@
                 mysqli_stmt_close($stmt);
 
                 // Insert plots using prepared statement
-                $sql = "INSERT INTO plot (description, section_id, type_id, stat_id) 
-                        VALUES (?, ?, 1, 3)";
+                $sql = "INSERT INTO plot (description, section_id, stat_id) 
+                        VALUES (?, ?, 3)";
                 $stmt = mysqli_prepare($conn, $sql);
                 mysqli_stmt_bind_param($stmt, "si", $description, $section_id);
 
@@ -97,15 +89,6 @@
             }
         }
 
-        if(empty($_POST['desc'])){
-            $_SESSION['message'] = $_SESSION['message'].'Enter a descripstion. <br>';
-        }else{
-            $desc = trim($_POST['desc']);
-            if(!preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc)){
-                $_SESSION['message'] = $_SESSION['message'].'Description must only contain up to 50 letters, numbers, spaces, hyphens, and underscores. <br>';
-            }
-        }
-
         if(empty($_POST['num_plot'])){
             $_SESSION['message'] = $_SESSION['message'].'Enter the number of plots. <br>';
         }else{
@@ -115,9 +98,9 @@
             }
         }
 
-        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&(preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $desc))
+        if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))
         &&(preg_match("/^[1-9]\d*$/", $num_plot))){
-            $ud_sql = "UPDATE section SET sec_name = '$name', description = '$desc', num_plot = $num_plot
+            $ud_sql = "UPDATE section SET sec_name = '$name', num_plot = $num_plot
             WHERE section_id = $u_id";
 
             $query = "SELECT num_plot FROM section WHERE section_id = ?";
@@ -150,14 +133,14 @@
 
                 echo $img_path.'<br>'.$target;
 
-                $ud_sql = "UPDATE section SET sec_name = '$name', description = '$desc', sec_img = '$target', num_plot = $num_plot
+                $ud_sql = "UPDATE section SET sec_name = '$name', sec_img = '$target', num_plot = $num_plot
                 WHERE section_id = $u_id";
             }
             echo $ud_sql;
 
             if ($num_plot > $current_num_plot) {
                 // Add new plots
-                $sql = "INSERT INTO plot (description, section_id, type_id, stat_id) VALUES (?, ?, 1, 3)";
+                $sql = "INSERT INTO plot (description, section_id, stat_id) VALUES (?, ?, 3)";
                 $stmt = mysqli_prepare($conn, $sql);
                 mysqli_stmt_bind_param($stmt, "si", $description, $u_id);
         
