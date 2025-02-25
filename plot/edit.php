@@ -4,9 +4,7 @@
     include('../includes/header.php');
     include('../includes/notAdminRedirect.php');
 
-    $bur_sql = "SELECT * FROM bur_type";
     $stat_sql = "SELECT * FROM status";
-    $bur_res = mysqli_query($conn, $bur_sql);
     $stat_res = mysqli_query($conn, $stat_sql);
 
     $plot_id = $_POST['plot_id'];
@@ -42,19 +40,6 @@
                 <form method="post" action="store.php" enctype="multipart/form-data">
                     <h1 class="h1 mb-3 fw-bold text-center">Edit <?php echo $plot_row['description']; ?></h1>
                     <?php include("../includes/alert.php"); ?>
-                    <div class="form-floating">
-                        <select class="form-select signin-top" name="burial">
-                            <?php
-                                while($row = mysqli_fetch_array($bur_res)){
-                                    if($plot_row['type_id'] == $row['type_id'])
-                                        echo "<option selected value=\"{$row['type_id']}\">{$row['description']}</option>";
-                                    else
-                                        echo "<option value=\"{$row['type_id']}\">{$row['description']}</option>";
-                                }
-                            ?>
-                        </select>
-                        <label for="floatingInput">Burial Type</label>
-                    </div>
                     <div class="form-floating">
                         <select class="form-select signin-bottom mb-2" name="status">
                             <?php

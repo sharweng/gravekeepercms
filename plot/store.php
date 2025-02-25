@@ -5,7 +5,6 @@
     
     if(isset($_POST['create'])){
         $sec_id = $_SESSION['sec_id']; // Get section ID from session
-        $type_id = $_POST['burial'];
         $stat_id = $_POST['status'];
 
         $num_sql = "SELECT num_plot FROM section WHERE section_id = $sec_id";
@@ -35,9 +34,9 @@
         $desc = "Plot " . $new_plot_number;
 
         // Insert new plot
-        $sql = "INSERT INTO plot (description, section_id, type_id, stat_id) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO plot (description, section_id, stat_id) VALUES (?, ?, ?)";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "siii", $desc, $sec_id, $type_id, $stat_id);
+        mysqli_stmt_bind_param($stmt, "sii", $desc, $sec_id, $stat_id);
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['success'] = "Plot created successfully!";
         } else {
@@ -50,12 +49,11 @@
 
     if (isset($_POST['update'])) {
         $plot_id = $_POST['plot_id'];
-        $type_id = $_POST['burial'];
         $stat_id = $_POST['status'];
     
-        $sql = "UPDATE plot SET type_id = ?, stat_id = ? WHERE plot_id = ?";
+        $sql = "UPDATE plot SET stat_id = ? WHERE plot_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "iii", $type_id, $stat_id, $plot_id);
+        mysqli_stmt_bind_param($stmt, "ii", $stat_id, $plot_id);
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['success'] = "Plot updated successfully!";
         } else {
