@@ -3,18 +3,16 @@
     ini_set('display_errors', 1);
     session_start();
     include("../includes/config.php");
-
-    $_SESSION['name'] = trim($_POST['name']);
-    $_SESSION['phone'] = trim($_POST['phone']);
-    $_SESSION['pass'] = trim($_POST['password']);
-    $_SESSION['cpass'] = trim($_POST['confirmPass']);
-    if(isset($_POST['submit-update'])){
-
-    }else{
-        $_SESSION['email'] = trim($_POST['email']);
-    }
-
+    $mode = $_GET['mode'];
+    if($mode == 'admin')
+        include('../includes/notAdminRedirect.php');
+    
     if(isset($_POST['submit-register'])){
+        $_SESSION['email'] = trim($_POST['email']);
+        $_SESSION['name'] = trim($_POST['name']);
+        $_SESSION['phone'] = trim($_POST['phone']);
+        $_SESSION['pass'] = trim($_POST['password']);
+        $_SESSION['cpass'] = trim($_POST['confirmPass']);
 
         if(empty($_POST['email'])){
             $_SESSION['message'] = $_SESSION['message'].'Enter an email. <br>';
@@ -62,7 +60,10 @@
             while($row = mysqli_fetch_array($emailExists)){
                 if(strtolower($email) == strtolower($row['email'])){
                     $_SESSION['message'] = $_SESSION['message'].'Email is already registered. Please log in or use a different email to register. <br>';
-                    header("Location: register.php");
+                    if($mode == 'admin')
+                        header("Location: /gravekeepercms/user/register.php?mode=admin");
+                    else
+                        header("Location: /gravekeepercms/user/register.php");
                     exit();
                 }
             }
@@ -76,32 +77,40 @@
             $result = mysqli_query($conn, $sql);
             if($result){
                 echo'test';
-                $_SESSION['lname'] = '';
-                $_SESSION['fname'] = '';
+                $_SESSION['name'] = '';
                 $_SESSION['email'] = '';
                 $_SESSION['pass'] = '';
                 $_SESSION['cpass'] = '';
                 $_SESSION['add'] = '';
                 $_SESSION['phone'] = '';
                 
+                
+                if($mode == 'admin')
+                    header("Location: /gravekeepercms/user/");
+                else{
+                    $last_id = $conn->insert_id;
+                    $_SESSION['user_id'] = $last_id;
+                    $_SESSION['email'] = $email;
+                    if($role == 1)
+                        $_SESSION['roleDesc'] = "admin";
+                    else
+                        $_SESSION['roleDesc'] = "user";
 
-                $last_id = $conn->insert_id;
-                $_SESSION['user_id'] = $last_id;
-                $_SESSION['email'] = $email;
-                if($role == 1)
-                    $_SESSION['roleDesc'] = "admin";
-                else
-                    $_SESSION['roleDesc'] = "user";
-                
-                header("Location: /gravekeepercms/");
-                
+                    header("Location: /gravekeepercms/");
+                }
             }
         }else{
-            header("Location: register.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/register.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/register.php");
         }
     }
 
     if (isset($_POST['submit-login'])) {
+        $_SESSION['email'] = trim($_POST['email']);
+        $_SESSION['pass'] = trim($_POST['password']);
+
         if(empty($_POST['email'])){
             $_SESSION['message'] = $_SESSION['message'].'Enter an email. <br>';
         }
@@ -143,53 +152,82 @@
     }
 
     if(isset($_POST['submit-update'])){
+        $_SESSION['email'] = trim($_POST['email']);
+        $_SESSION['name'] = trim($_POST['name']);
+        $_SESSION['phone'] = trim($_POST['phone']);
+        $_SESSION['pass'] = trim($_POST['password']);
+        $_SESSION['cpass'] = trim($_POST['confirmPass']);
 
         if(empty($_POST['email'])){
             $_SESSION['message'] = $_SESSION['message'].'Enter an email. <br>';
-            header("Location: profile.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/profile.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/profile.php");
             exit();
         }else{
             $email = trim($_POST['email']);
             if(!preg_match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/", $email)){
                 $_SESSION['message'] = $_SESSION['message'].'Enter a valid email. <br>';
-                header("Location: profile.php");
+                if($mode == 'admin')
+                    header("Location: /gravekeepercms/user/profile.php?mode=admin");
+                else
+                    header("Location: /gravekeepercms/user/profile.php");
                 exit();
             }
         }
 
         if(empty($_POST['name'])){
             $_SESSION['message'] = $_SESSION['message'].'Enter a name. <br>';
-            header("Location: profile.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/profile.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/profile.php");
             exit();
         }else{
             $name = trim($_POST['name']);
             if(!preg_match("/^[A-Za-z' -]{2,50}$/", $name)){
                 $_SESSION['message'] = $_SESSION['message'].'Enter a valid name. <br>';
-                header("Location: profile.php");
+                if($mode == 'admin')
+                    header("Location: /gravekeepercms/user/profile.php?mode=admin");
+                else
+                    header("Location: /gravekeepercms/user/profile.php");
                 exit();
             }
         }
 
         if(empty($_POST['phone'])){
             $_SESSION['message'] = $_SESSION['message'].'Enter a phone number. <br>';
-            header("Location: profile.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/profile.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/profile.php");
             exit();
         }else{
             $phone = trim($_POST['phone']);
             if(!preg_match("/^\d{11}$/", $phone)){
                 $_SESSION['message'] = $_SESSION['message'].'Enter an 11 digit phone number. <br>';
-                header("Location: profile.php");
+                if($mode == 'admin')
+                    header("Location: /gravekeepercms/user/profile.php?mode=admin");
+                else
+                    header("Location: /gravekeepercms/user/profile.php");
                 exit();
             }
         }    
     
         if((isset($_POST['password'])&&!isset($_POST['confirmPass']))||(!isset($_POST['password'])&&isset($_POST['confirmPass']))){
             $_SESSION['message'] = $_SESSION['message'].'Enter both passwords. <br>';
-            header("Location: profile.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/profile.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/profile.php");
             exit();
         }elseif($_POST['password']!=$_POST['confirmPass']){
             $_SESSION['message'] = $_SESSION['message'].'Passwords do not match. <br>';
-            header("Location: profile.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/profile.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/profile.php");
             exit();
         }
 
@@ -206,7 +244,10 @@
 
                 if (mysqli_num_rows($result) > 0) {  // If email already exists
                     $_SESSION['message'] = 'Email is already registered. Please log in or use a different email to register. <br>';
-                    header("Location: profile.php");
+                    if($mode == 'admin')
+                        header("Location: /gravekeepercms/user/profile.php?mode=admin");
+                    else
+                        header("Location: /gravekeepercms/user/profile.php");
                     exit();
                 }
             }
@@ -220,7 +261,10 @@
                 $pass = trim($_POST['password']);
                 if(!preg_match("/^.{12,}$/", $pass)){
                     $_SESSION['message'] = $_SESSION['message'].'Password must be atleast 12 characters. <br>';
-                    header("Location: /gravekeepercms/user/profile.php");
+                    if($mode == 'admin')
+                        header("Location: /gravekeepercms/user/profile.php?mode=admin");
+                    else
+                        header("Location: /gravekeepercms/user/profile.php");
                     exit();
                 }
                 $password = sha1($pass);
@@ -228,38 +272,57 @@
                 $sql = $sql . ", password = '$password'";
             }
             echo $sql;
-            $sql = $sql . " WHERE user_id = " . $_SESSION['user_id'];
+            if($mode == 'admin')
+                $u_id = $_GET['id'];
+            else
+                $u_id = $_SESSION['user_id'];
+
+            $sql = $sql . " WHERE user_id = " . $u_id;
             $result = mysqli_query($conn, $sql);
             if($result){
                 echo'test';
-                $_SESSION['lname'] = '';
-                $_SESSION['fname'] = '';
+                $_SESSION['name'] = '';
                 $_SESSION['email'] = '';
                 $_SESSION['pass'] = '';
                 $_SESSION['cpass'] = '';
                 $_SESSION['add'] = '';
                 $_SESSION['phone'] = '';
 
-
-                $_SESSION['success'] = "Profile Saved.";
-                header("Location: /gravekeepercms/user/profile.php");
-                
+                if($mode == 'admin')
+                    header("Location: /gravekeepercms/user/");
+                else{
+                    $_SESSION['success'] = "Profile Saved.";
+                    header("Location: /gravekeepercms/user/profile.php");
+                }
             }
         }else{
-            header("Location: profile.php");
+            if($mode == 'admin')
+                header("Location: /gravekeepercms/user/profile.php?mode=admin");
+            else
+                header("Location: /gravekeepercms/user/profile.php");
             exit();
         }
     }
 
     if(isset($_POST['submit-delete'])){
+        if($mode == 'admin')
+            $u_id = $_POST['user_id'];
+        else
+            $u_id = $_SESSION['user_id'];
+
         $sql = "DELETE FROM user WHERE user_id = ?";
         $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "s", $_SESSION['user_id']);
+        mysqli_stmt_bind_param($stmt, "s", $u_id);
         $delete_result = mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
-
-        if ($delete_result) {
-            header("Location: logout.php");
-        } 
+        
+        if($mode != 'admin'){
+            if ($delete_result) {
+                header("Location: logout.php");
+            } 
+        }else{
+            header("Location: /gravekeepercms/user/");
+        }
+            
     }
 ?>

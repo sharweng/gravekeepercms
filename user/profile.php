@@ -3,7 +3,14 @@
     include("../includes/config.php");
     include('../includes/header.php');
 
-    $user_id = $_SESSION['user_id'];
+    $mode = $_GET['mode'];
+    if($mode == 'admin'){
+        include('../includes/notAdminRedirect.php');
+        $user_id = $_POST['user_id'];
+    }else{
+        $user_id = $_SESSION['user_id'];
+    }
+    
     $sql = "SELECT * FROM user WHERE user_id = $user_id";
     $res = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($res);
@@ -33,7 +40,11 @@
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100">
-                <form method="post" action="store.php">
+                <form method="post" <?php if($mode == 'admin')
+                            echo "action=\"store.php?mode=admin&id={$_POST['user_id']}\"";
+                        else
+                            echo "action=\"store.php\"";
+                        ?>>
                     <h1 class="h1 mb-3 fw-bold text-center">Profile</h1>
                     <?php include("../includes/alert.php"); ?>
                     <div class="form-floating ">
@@ -68,7 +79,11 @@
                     <button class="btn btn-danger w-100 py-2 border-darker-grey mt-1" name="submit-delete" type="submit">Delete</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
-                    <a href="/gravekeepercms/" class="text-decoration-none a-darker-grey">Back</a>
+                    <?php if($mode == 'admin') 
+                            echo "<a href=\"/gravekeepercms/user/\" class=\"text-decoration-none a-darker-grey\">Back</a>";
+                        else
+                            echo "<a href=\"login.php\" class=\"text-decoration-none a-darker-grey\">Login</a>";
+                    ?>
                 </div>
             </main>
         </div>

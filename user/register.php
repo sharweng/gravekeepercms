@@ -2,6 +2,9 @@
     session_start();
     include("../includes/config.php");
     include('../includes/header.php');
+    $mode = $_GET['mode'];
+    if($mode == 'admin')
+        include('../includes/notAdminRedirect.php');
 ?>
 
 <!DOCTYPE html>
@@ -28,13 +31,18 @@
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100">
-                <form method="post" action="store.php">
+                <form method="post" <?php if($mode == 'admin')
+                            echo "action=\"store.php?mode=admin\"";
+                        else
+                            echo "action=\"store.php\"";
+                        ?>>
                     <h1 class="h1 mb-3 fw-bold text-center">Register</h1>
                     <?php include("../includes/alert.php"); ?>
                     <div class="form-floating ">
                         <input type="email" class="form-control signin-top" id="floatingInput" name="email" placeholder="name@example.com" value="<?php
-                                            if(isset($_SESSION['email'])){
-                                                echo $_SESSION['email'];
+                                            if($mode != 'admin')
+                                                if(isset($_SESSION['email'])){
+                                                    echo $_SESSION['email'];
                                         }?>">
                         <label for="floatingInput">Email address</label>
                     </div>
@@ -63,7 +71,11 @@
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="submit-register" type="submit">Register</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
-                    <a href="login.php" class="text-decoration-none a-darker-grey">Login</a>
+                    <?php if($mode == 'admin') 
+                            echo "<a href=\"/gravekeepercms/user/\" class=\"text-decoration-none a-darker-grey\">Back</a>";
+                        else
+                            echo "<a href=\"login.php\" class=\"text-decoration-none a-darker-grey\">Login</a>";
+                    ?>
                 </div>
             </main>
         </div>
