@@ -41,6 +41,9 @@
         <p class="fw-bold h3 text-center mx-3" style="color: #a8a8a9;">Cemetery Management System</p>
     </div>
     <!-- Left half for login form -->
+    <?php if($_SESSION['roleDesc'] == 'admin'){ ?>
+      <h1 class="fw-bold text-center mb-0 mt-3">Manage Plots</h1>
+    <?php } ?>
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100 gap-1 d-grid" >
             <div class="gap-1 d-flex">
