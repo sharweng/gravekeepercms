@@ -121,18 +121,31 @@
         if(!empty($_POST['email']) && !empty($_POST['password'])){
             $email = trim($_POST['email']);
             $pass = sha1(trim($_POST['password']));
-            $sql = "SELECT u.user_id, u.email, u.role_id FROM user u WHERE u.email=? AND u.password=? LIMIT 1";
+            $sql = "SELECT u.user_id, u.email, u.role_id, u.stat_id FROM user u WHERE u.email=? AND u.password=? LIMIT 1";
             $stmt = mysqli_prepare($conn, $sql);
             mysqli_stmt_bind_param($stmt, 'ss', $email, $pass);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_store_result($stmt);
-            mysqli_stmt_bind_result($stmt, $user_id, $email, $role);
+            mysqli_stmt_bind_result($stmt, $user_id, $email, $role, $stat);
             if (mysqli_stmt_num_rows($stmt) === 1) {
                 mysqli_stmt_fetch($stmt);
 
                 $_SESSION['user_id'] = $user_id;
                 $_SESSION['email'] = $email;
                 $_SESSION['pass'] = '';
+
+                
+                if($stat == 2){
+                    $_SESSION['message'] = 'Account deactivated: Your account is currently inactive. Please contact support for assistance.';
+                    header("Location: login.php");
+                    exit();
+                }
+                if($stat == 8){
+                    $_SESSION['message'] = 'Invalid email or password. Please try again.';
+                    header("Location: login.php");
+                    exit();
+                }
+                
 
                 if($role == 1)
                     $_SESSION['roleDesc'] = "admin";
@@ -328,9 +341,13 @@
     }
 
     if(isset($_POST['submit-softdelete'])){
-        $u_id = $_SESSION['user_id'];
+        if($mode == 'admin')
+            $u_id = $_POST['user_id'];
+        else
+            $u_id = $_SESSION['user_id'];
 
-        $sql = "UPDATE user SET";
+        $sql = "UPDATE user SET stat_id = 8 WHERE user_id = ?" ;
+        echo $sql;
         $stmt = mysqli_prepare($conn, $sql);
         mysqli_stmt_bind_param($stmt, "s", $u_id);
         $delete_result = mysqli_stmt_execute($stmt);

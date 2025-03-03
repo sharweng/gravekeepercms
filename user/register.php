@@ -2,6 +2,11 @@
     session_start();
     include("../includes/config.php");
     include('../includes/header.php');
+    if($_SESSION['loggedIn'] == true){
+        $_SESSION['message'] = 'User must logout before registering. <br>';
+        header("Location: /gravekeepercms/");
+        exit();
+    }
     $mode = $_GET['mode'];
     if($mode == 'admin')
         include('../includes/notAdminRedirect.php');

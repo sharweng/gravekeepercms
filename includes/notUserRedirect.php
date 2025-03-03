@@ -1,5 +1,9 @@
 <?php
-    if($_SESSION['roleDesc'] == 'deactivated'){
+    $sql = "SELECT s.description FROM user u INNER JOIN status s ON u.stat_id = s.stat_id WHERE user_id = {$_SESSION['user_id']}";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+
+    if($row['description'] == 'deactivated'){
         $_SESSION['message'] = 'Account deactivated: Your account is currently inactive. Please contact support for assistance.';
         session_destroy();
         header("Location: /gravekeepercms/user/login.php");

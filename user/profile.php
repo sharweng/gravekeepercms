@@ -76,13 +76,14 @@
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="submit-update" type="submit">Update Profile</button>
                 </form>
                 <form method="post" action="store.php">
-                    <button class="btn btn-danger w-100 py-2 border-darker-grey mt-1" name="submit-delete" type="submit">Delete</button>
+                    <?php ?>
+                    <button class="btn btn-danger w-100 py-2 border-darker-grey mt-1" name="submit-softdelete" type="submit">Delete</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
                     <?php if($mode == 'admin') 
                             echo "<a href=\"/gravekeepercms/user/\" class=\"text-decoration-none a-darker-grey\">Back</a>";
                         else
-                            echo "<a href=\"login.php\" class=\"text-decoration-none a-darker-grey\">Login</a>";
+                        echo "<a href=\"/gravekeepercms/\" class=\"text-decoration-none a-darker-grey\">Back</a>";
                     ?>
                 </div>
             </main>
