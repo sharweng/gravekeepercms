@@ -15,40 +15,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reserv_id'])) {
     if ($row = mysqli_fetch_assoc($result)) {
         $plot_id = $row['plot_id'];
 
-        if (isset($_POST['confirm'])) {
-            // Get current date for date_reserved
-            $date_reserved = date("Y-m-d");
+        mysqli_begin_transaction($conn); // Start transaction
 
-            // Update reservation status to "confirmed" and set the date_reserved
-            $update_reserv = "UPDATE reservation 
-                              SET stat_id = (SELECT stat_id FROM status WHERE description = 'confirmed'), 
-                                  date_reserved = ? 
-                              WHERE reserv_id = ?";
-            
-            $update_plot = "UPDATE plot 
-                            SET stat_id = (SELECT stat_id FROM status WHERE description = 'occupied') 
-                            WHERE plot_id = ?";
+        try {
+            if (isset($_POST['confirm'])) {
+                // Get current date for date_reserved
+                $date_reserved = date("Y-m-d");
 
-            $stmt1 = mysqli_prepare($conn, $update_reserv);
-            mysqli_stmt_bind_param($stmt1, "si", $date_reserved, $reserv_id);
-            mysqli_stmt_execute($stmt1);
+                // Update reservation status to "confirmed" and set the date_reserved
+                $update_reserv = "UPDATE reservation 
+                                  SET stat_id = (SELECT stat_id FROM status WHERE description = 'confirmed'), 
+                                      date_reserved = ? 
+                                  WHERE reserv_id = ?";
+                
+                $update_plot = "UPDATE plot 
+                                SET stat_id = (SELECT stat_id FROM status WHERE description = 'occupied') 
+                                WHERE plot_id = ?";
 
-            $stmt2 = mysqli_prepare($conn, $update_plot);
-            mysqli_stmt_bind_param($stmt2, "i", $plot_id);
-            mysqli_stmt_execute($stmt2);
+                $stmt1 = mysqli_prepare($conn, $update_reserv);
+                mysqli_stmt_bind_param($stmt1, "si", $date_reserved, $reserv_id);
+                mysqli_stmt_execute($stmt1);
 
-            $_SESSION['success'] = "Reservation confirmed successfully.";
-        } elseif (isset($_POST['cancel'])) {
-            // Update reservation status to "canceled"
-            $update_reserv = "UPDATE reservation 
-                              SET stat_id = (SELECT stat_id FROM status WHERE description = 'canceled') 
-                              WHERE reserv_id = ?";
-            
-            $stmt1 = mysqli_prepare($conn, $update_reserv);
-            mysqli_stmt_bind_param($stmt1, "i", $reserv_id);
-            mysqli_stmt_execute($stmt1);
+                $stmt2 = mysqli_prepare($conn, $update_plot);
+                mysqli_stmt_bind_param($stmt2, "i", $plot_id);
+                mysqli_stmt_execute($stmt2);
 
-            $_SESSION['success'] = "Reservation canceled successfully.";
+                $_SESSION['success'] = "Reservation confirmed successfully.";
+            } elseif (isset($_POST['cancel'])) {
+                // Update reservation status to "canceled"
+                $update_reserv = "UPDATE reservation 
+                                  SET stat_id = (SELECT stat_id FROM status WHERE description = 'canceled') 
+                                  WHERE reserv_id = ?";
+
+                $update_plot = "UPDATE plot 
+                                SET stat_id = 3 
+                                WHERE plot_id = ?"; // Revert plot status to 3 (Available)
+
+                $stmt1 = mysqli_prepare($conn, $update_reserv);
+                mysqli_stmt_bind_param($stmt1, "i", $reserv_id);
+                mysqli_stmt_execute($stmt1);
+
+                $stmt2 = mysqli_prepare($conn, $update_plot);
+                mysqli_stmt_bind_param($stmt2, "i", $plot_id);
+                mysqli_stmt_execute($stmt2);
+
+                $_SESSION['success'] = "Reservation canceled successfully, and plot is now available.";
+            }
+
+            mysqli_commit($conn); // Commit transaction
+        } catch (Exception $e) {
+            mysqli_rollback($conn); // Rollback changes if something fails
+            $_SESSION['error'] = "Error processing request. Please try again.";
         }
     } else {
         $_SESSION['error'] = "Reservation not found.";

@@ -41,9 +41,6 @@
         <p class="fw-bold h3 text-center mx-3" style="color: #a8a8a9;">Cemetery Management System</p>
     </div>
     <!-- Left half for login form -->
-    <?php if($_SESSION['roleDesc'] == 'admin'){ ?>
-      <h1 class="fw-bold text-center mb-0 mt-3">Manage Plots</h1>
-    <?php } ?>
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100 gap-1 d-grid" >
             <div class="gap-1 d-flex">
@@ -70,7 +67,7 @@
           echo "<div class=\"text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\"  data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['plot_id']}\">
             <div class=\"card-body \">
               <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
-              <input type=\"hidden\" value=\"{$row['p.plot_id']}\" name=\"plot_id\">";
+              <input type=\"hidden\" value=\"{$row['plot_id']}\" name=\"plot_id\">";
               if($_SESSION['roleDesc'] == 'admin'){
                 echo "<div class=\"d-flex gap-1\">
                   <form action=\"/gravekeepercms/plot/edit.php\" method=\"post\" class=\"col\">
@@ -85,21 +82,28 @@
               }else{?>
               <p class="mb-1">
                     <span class="badge w-100 
-                        <?php echo ($row['status_desc'] == 'occupied') ? 'bg-danger' : 'bg-success'; ?>">
+                        <?php if ($row['status_desc'] == 'occupied')
+                                echo 'bg-danger';
+                              elseif ($row['status_desc'] == 'pending')
+                                echo 'bg-warning';
+                              else
+                                echo 'bg-success'; ?>">
                         <?php echo ucfirst($row['status_desc']); ?>
                     </span>
                 </p>
                 
-                <?php if ($row['status_desc'] !== 'occupied') { ?>
-                    <form action="/gravekeepercms/reservation/confirm_reservation.php?section=<?php echo $_SESSION['sec_id'] ?>&plot=<?php echo $row['plot_id'] ?>" method="post">
-                        <input type="hidden" name="plot_id" value="<?php echo $row['plot_id']; ?>">
-                        <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
-                        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">RESERVE</button>
-                    </form>
-                <?php } else { ?>
-                    <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>Unavailable</button>
-                <?php }
-                } ?>
+                <?php if ($row['status_desc'] !== 'occupied' && $row['status_desc'] !== 'pending') { ?>
+    <form action="/gravekeepercms/reservation/confirm_reservation.php?section=<?php echo $_SESSION['sec_id'] ?>&plot=<?php echo $row['plot_id'] ?>" method="post">
+        <input type="hidden" name="plot_id" value="<?php echo $row['plot_id']; ?>">
+        <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
+        <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">RESERVE</button>
+    </form>
+<?php } elseif ($row['status_desc'] == 'occupied') { ?>
+    <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>Unavailable</button>
+<?php } elseif ($row['status_desc'] == 'pending') { ?>
+    <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>A reservation is in process</button>
+<?php } 
+ } ?>
               <?php
               
             echo "</div>
@@ -137,4 +141,3 @@
   include("../includes/footer.php");
 ?>
 </html>
-

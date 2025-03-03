@@ -55,7 +55,6 @@
         <p class="fw-bold h3 text-center mx-3" style="color: #a8a8a9;">Cemetery Management System</p>
     </div>
     <!-- Left half for login form -->
-    <h1 class="fw-bold text-center mb-0 mt-3">Manage Users</h1>
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100 d-grid gap-2" >
             <div class="d-flex w-100 gap-1">

@@ -54,7 +54,6 @@ $plot = mysqli_fetch_assoc($plot_result);
     <div class="card">
         <div class="card-body">
             <h3 class="card-title"><?php echo htmlspecialchars($section['sec_name']); ?></h3>
-            <p class="card-text"><?php echo htmlspecialchars($section['description']); ?></p>
             <h4>Plot Details</h4>
             <p><strong>Description:</strong> <?php echo htmlspecialchars($plot['description']); ?></p>
             <p><strong>Location:</strong> <?php echo htmlspecialchars($plot['location'] ?? 'Not specified'); ?></p>
