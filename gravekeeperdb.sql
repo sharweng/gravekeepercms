@@ -104,8 +104,10 @@ INSERT INTO `status` (`stat_id`, `description`) VALUES
 (2, 'deactivated'),
 (3, 'available'),
 (4, 'occupied'),
-(5, 'pending'),
-(6, 'confirmed');
+(5, 'pending'), 
+(6, 'confirmed'),
+(7, 'reserved'),
+(8, 'soft-deleted');
 
 INSERT INTO bur_type(description)VALUES
 ('unassigned'),

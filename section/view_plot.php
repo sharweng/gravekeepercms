@@ -88,21 +88,22 @@
                                 echo 'bg-warning';
                               else
                                 echo 'bg-success'; ?>">
+          
                         <?php echo ucfirst($row['status_desc']); ?>
                     </span>
                 </p>
                 
-                <?php if ($row['status_desc'] !== 'occupied' && $row['status_desc'] !== 'pending') { ?>
+                <?php if ($row['status_desc'] !== 'occupied' && $row['status_desc'] !== 'pending' && $row['status_desc'] !== 'reserved') { ?>
     <form action="/gravekeepercms/reservation/confirm_reservation.php?section=<?php echo $_SESSION['sec_id'] ?>&plot=<?php echo $row['plot_id'] ?>" method="post">
         <input type="hidden" name="plot_id" value="<?php echo $row['plot_id']; ?>">
         <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
         <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold">RESERVE</button>
     </form>
-<?php } elseif ($row['status_desc'] == 'occupied') { ?>
-    <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>Unavailable</button>
-<?php } elseif ($row['status_desc'] == 'pending') { ?>
-    <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>A reservation is in process</button>
-<?php } 
+        <?php } elseif ($row['status_desc'] == 'occupied') { ?>
+       <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>Unavailable</button>
+        <?php } elseif ($row['status_desc'] == 'pending') { ?>
+      <button class="btn btn-secondary btn-sm w-100 fw-bold" disabled>A reservation is in process</button>
+      <?php }  
  } ?>
               <?php
               

@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reserv_id'])) {
                                   WHERE reserv_id = ?";
                 
                 $update_plot = "UPDATE plot 
-                                SET stat_id = (SELECT stat_id FROM status WHERE description = 'occupied') 
+                                SET stat_id = (SELECT stat_id FROM status WHERE description = 'reserved') 
                                 WHERE plot_id = ?";
 
                 $stmt1 = mysqli_prepare($conn, $update_reserv);

@@ -326,4 +326,23 @@
         }
             
     }
+
+    if(isset($_POST['submit-softdelete'])){
+        $u_id = $_SESSION['user_id'];
+
+        $sql = "UPDATE user SET";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $u_id);
+        $delete_result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        
+        if($mode != 'admin'){
+            if ($delete_result) {
+                header("Location: logout.php");
+            } 
+        }else{
+            header("Location: /gravekeepercms/user/");
+        }
+            
+    }
 ?>
