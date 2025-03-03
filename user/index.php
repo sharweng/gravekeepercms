@@ -76,7 +76,7 @@
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){ 
-          echo "<div href=\"#\" class=\"w-100 px-3 py-2 text-decoration-none form-signin align-items-center justify-content-between d-flex border rounded enlarge p-1\" style=\"width: 230px; height:\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['user_id']}\">";?>
+          echo "<div href=\"#\" class=\"w-100 px-3 py-2 text-decoration-none form-signin align-items-center justify-content-between d-flex border rounded enlarge p-1\" style=\"width: 230px; height:\" >";?>
                 <div class=" fw-bold">
                     <?php echo $row['email'] ?>
                 </div>
@@ -85,15 +85,33 @@
                         <form "; 
                         echo "action=\"profile.php?mode=admin\" "; 
                         echo "method=\"post\" class=\"col\">
+                          <div class=\"col btn btn-success fw-bold w-100 btn-sm\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['user_id']}\">VIEW</div>
+                        </form>
+                        <form "; 
+                        echo "action=\"profile.php?mode=admin\" "; 
+                        echo "method=\"post\" class=\"col\">
                           <input type=\"hidden\" name=\"user_id\" value=\"{$row['user_id']}\" />
                           <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"submit-update\" onclick=\"event.stopPropagation();\">EDIT</button>
                         </form>
-                        <form "; 
-                        echo "action=\"store.php?mode=admin\" "; 
-                        echo "method=\"post\" class=\"col\">
-                          <input type=\"hidden\" name=\"user_id\" value=\"{$row['user_id']}\" />
-                          <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"submit-delete\" onclick=\"event.stopPropagation();\">DELETE</button>
-                        </form>
+                        <div class=\"dropdown col d-block\">
+                            <button class=\"btn btn-danger fw-bold btn-sm w-100 dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\" ;/>
+                                DELETE
+                            </button>
+                            <ul class=\"dropdown-menu\">
+                                <form ";
+                                    echo "action=\"store.php?mode=admin\" ";
+                                    echo "method=\"post\" class=\"col\">
+                                    <input type=\"hidden\" name=\"user_id\" value=\"{$row['user_id']}\" />
+                                    <button class=\"dropdown-item btn-sm w-100\" name=\"submit-softdelete\" onclick=\"event.stopPropagation();\">SOFT-DELETE</button>
+                                </form>
+                                <form "; 
+                                    echo "action=\"store.php?mode=admin\" "; 
+                                    echo "method=\"post\" class=\"col\">
+                                    <input type=\"hidden\" name=\"user_id\" value=\"{$row['user_id']}\" />
+                                    <button class=\"dropdown-item btn-sm w-100\" name=\"submit-delete\" onclick=\"event.stopPropagation();\">DELETE</button>
+                                </form>
+                            </ul>
+                        </div>
                       </div>";
             echo "
             </div>";
