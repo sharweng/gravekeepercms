@@ -2,6 +2,12 @@
     session_start();
     include("../includes/config.php");
     include('../includes/header.php');
+
+    if($_SESSION['loggedIn'] == true){
+        $_SESSION['message'] = 'User must logout before logging in again. <br>';
+        header("Location: /gravekeepercms/");
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>

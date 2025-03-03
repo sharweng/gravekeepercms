@@ -19,6 +19,7 @@
 </head>
 <body>
   <h1>This is the body.</h1>
+  <?php include("includes/alert.php"); ?>
   <a href="/gravekeepercms/section/" class="btn btn-darker-grey">Section</a>
 </body>
 </html>

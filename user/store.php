@@ -138,6 +138,7 @@
                     $_SESSION['roleDesc'] = "admin";
                 else
                     $_SESSION['roleDesc'] = "user";
+                $_SESSION['loggedIn'] = true;
                 header("Location: /gravekeepercms/"); 
             } else {
                 $_SESSION['message'] = 'Invalid email or password. Please try again.';
