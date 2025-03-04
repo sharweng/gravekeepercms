@@ -63,7 +63,18 @@
                         </form>
                       </div>";
               }else{
-                echo "<div class=\"col\">
+                $check_sql = "SELECT COUNT(*) as num
+                              FROM plot WHERE stat_id = 3 AND section_id = {$row['section_id']}";
+                $check_res = mysqli_query($conn, $check_sql);
+                $check = mysqli_fetch_assoc($check_res);
+                
+                if($check['num'] == 0)
+                  echo "<div class=\"col\">
+                          <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
+                          <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"delete\">FULL</button>
+                        </div>";
+                else
+                  echo "<div class=\"col\">
                           <input type=\"hidden\" name=\"section_id\" value=\"{$row['section_id']}\" />
                           <button class=\"col btn btn-primary fw-bold w-100 btn-sm\" name=\"delete\">RESERVE</button>
                         </div>";
