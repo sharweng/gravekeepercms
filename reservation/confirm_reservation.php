@@ -29,10 +29,13 @@ $section_sql = "SELECT * FROM section WHERE section_id = '$section_id'";
 $section_result = mysqli_query($conn, $section_sql);
 $section = mysqli_fetch_assoc($section_result);
 
-// Fetch plot details
+// Fetch plot details, including price
 $plot_sql = "SELECT * FROM plot WHERE plot_id = '$plot_id'";
 $plot_result = mysqli_query($conn, $plot_sql);
 $plot = mysqli_fetch_assoc($plot_result);
+
+// Format price
+$plot_price = number_format($plot['price'], 2);
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +60,7 @@ $plot = mysqli_fetch_assoc($plot_result);
             <h4>Plot Details</h4>
             <p><strong>Description:</strong> <?php echo htmlspecialchars($plot['description']); ?></p>
             <p><strong>Location:</strong> <?php echo htmlspecialchars($plot['location'] ?? 'Not specified'); ?></p>
+            <p><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $plot_price; ?></span></p>
             <p><strong>Reserved by:</strong> <?php echo htmlspecialchars($user_name); ?></p>
             <p><strong>Date Placed:</strong> <?php echo date("Y-m-d H:i:s"); ?></p>
         </div>
@@ -67,6 +71,7 @@ $plot = mysqli_fetch_assoc($plot_result);
         <input type="hidden" name="plot_id" value="<?php echo htmlspecialchars($plot_id); ?>">
         <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
+        <input type="hidden" name="price" value="<?php echo htmlspecialchars($plot['price']); ?>">
         <button type="submit" class="btn btn-success mt-3">Confirm Reservation</button>
     </form>
 
