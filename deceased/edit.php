@@ -5,11 +5,9 @@
     include('../includes/notAdminRedirect.php');
 
     // Get deceased record details
-    $dec_id = $_POST['dec_id'];
+    $dec_id = isset($_POST['dec_id']) ? $_POST['dec_id'] : (isset($_SESSION['dec_id']) ? $_SESSION['dec_id'] : 0);
     if(isset($_POST['dec_id'])){
         $_SESSION['dec_id'] = $dec_id;
-    }else{
-        $dec_id = $_SESSION['dec_id'];
     }
     
     $dec_sql = "SELECT d.*, b.burial_date, b.type_id, b.plot_id, p.section_id 
@@ -31,10 +29,10 @@
     $sec_sql = "SELECT * FROM section";
     $sec_res = mysqli_query($conn, $sec_sql);
 
-    // Get plots for the current section
-    $plot_sql = "SELECT * FROM plot WHERE section_id = ?";
+    // Get plots for the current section - include both available plots AND the current plot
+    $plot_sql = "SELECT * FROM plot WHERE section_id = ? AND (stat_id = 3 OR plot_id = ?)";
     $stmt = mysqli_prepare($conn, $plot_sql);
-    mysqli_stmt_bind_param($stmt, "i", $dec_row['section_id']);
+    mysqli_stmt_bind_param($stmt, "ii", $dec_row['section_id'], $dec_row['plot_id']);
     mysqli_stmt_execute($stmt);
     $plot_res = mysqli_stmt_get_result($stmt);
 ?>
@@ -73,7 +71,7 @@
                 </div>
                 <div class="form-floating">
                     <input type="text" class="form-control signin-middle" id="fname" name="fname" placeholder="First Name" 
-                        value="<?php echo  $dec_row['fname']; ?>">
+                        value="<?php echo $dec_row['fname']; ?>">
                     <label for="fname">First Name</label>
                 </div>
                 <div class="form-floating">
@@ -118,15 +116,22 @@
                 <div class="form-floating">
                     <select class="form-select signin-middle" name="plot" id="plot">
                         <?php
-                            while($row = mysqli_fetch_array($plot_res)){
-                                $selected = ($dec_row['plot_id'] == $row['plot_id']) ? 'selected' : '';
-                                echo "<option value=\"{$row['plot_id']}\" {$selected}>{$row['description']}</option>";
+                            if(mysqli_num_rows($plot_res) > 0) {
+                                while($row = mysqli_fetch_array($plot_res)){
+                                    $selected = ($dec_row['plot_id'] == $row['plot_id']) ? 'selected' : '';
+                                    echo "<option value=\"{$row['plot_id']}\" {$selected}>{$row['description']}</option>";
+                                }
+                            } else {
+                                echo "<option value='{$dec_row['plot_id']}' selected>{$dec_row['plot_id']} (Current)</option>";
                             }
                         ?>
                     </select>
                     <label for="plot">Plot</label>
                 </div>
                 <div class="mb-2">
+                    <?php if($dec_row['picture']): ?>
+                        <img src="/gravekeepercms/deceased/<?php echo $dec_row['picture']; ?>" alt="Current Image" class="img-thumbnail mb-2" style="max-width: 100px;">
+                    <?php endif; ?>
                     <input type="file" class="form-control signin-bottom" name="img-path" accept="image/*">
                     <small class="text-muted">Leave empty to keep current image</small>
                 </div>
@@ -142,23 +147,45 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('select[name="section"]').change(function() {
-            var sectionId = $(this).val();
+        // Function to update plots based on selected section
+        function updatePlots(sectionId) {
+            var currentPlotId = <?php echo $dec_row['plot_id']; ?>;
+            
             $.ajax({
-                url: 'get_plots.php',
+                url: 'get_plots_edit.php',
                 type: 'POST',
-                data: { section_id: sectionId },
+                data: { 
+                    section_id: sectionId,
+                    current_plot_id: currentPlotId
+                },
+                dataType: 'json',
                 success: function(data) {
                     var plotSelect = $('select[name="plot"]');
                     plotSelect.empty();
-                    $.each(data, function(index, item) {
-                        plotSelect.append(new Option(item.description, item.plot_id));
-                    });
+                    
+                    if(data.length > 0) {
+                        $.each(data, function(index, item) {
+                            var selected = (currentPlotId == item.plot_id) ? 'selected' : '';
+                            plotSelect.append(new Option(item.description, item.plot_id, false, selected));
+                        });
+                    } else {
+                        // If no plots available, keep the current plot as an option
+                        plotSelect.append(new Option('No available plots in this section', ''));
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error fetching plots:', error);
+                    var plotSelect = $('select[name="plot"]');
+                    plotSelect.empty();
+                    plotSelect.append(new Option('Error loading plots', ''));
                 }
             });
+        }
+
+        // Update plots when section changes
+        $('select[name="section"]').change(function() {
+            var sectionId = $(this).val();
+            updatePlots(sectionId);
         });
     });
 </script>

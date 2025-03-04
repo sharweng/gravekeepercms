@@ -17,7 +17,8 @@
         mysqli_data_seek($sec_res, 0);
     }
 
-    $plot_sql = "SELECT * FROM plot WHERE section_id = '$section_id'";
+    // Only show available plots (stat_id = 3)
+    $plot_sql = "SELECT * FROM plot WHERE section_id = '$section_id' AND stat_id = 3";
     $plot_res = mysqli_query($conn, $plot_sql);
 ?>
 
@@ -100,9 +101,13 @@
                 <div class="form-floating">
                     <select class="form-select signin-middle" name="plot" id="plot">
                         <?php
-                            while($row = mysqli_fetch_array($plot_res)){
-                                $selected = (isset($_SESSION['plot']) && $_SESSION['plot'] == $row['plot_id']) ? 'selected' : '';
-                                echo "<option value=\"{$row['plot_id']}\" {$selected}>{$row['description']}</option>";
+                            if(mysqli_num_rows($plot_res) > 0) {
+                                while($row = mysqli_fetch_array($plot_res)){
+                                    $selected = (isset($_SESSION['plot']) && $_SESSION['plot'] == $row['plot_id']) ? 'selected' : '';
+                                    echo "<option value=\"{$row['plot_id']}\" {$selected}>{$row['description']}</option>";
+                                }
+                            } else {
+                                echo "<option value=''>No available plots in this section</option>";
                             }
                         ?>
                     </select>
@@ -120,24 +125,38 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('select[name="section"]').change(function() {
-            var sectionId = $(this).val();
+        // Function to update plots based on selected section
+        function updatePlots(sectionId) {
             $.ajax({
                 url: 'get_plots.php',
                 type: 'POST',
                 data: { section_id: sectionId },
+                dataType: 'json',
                 success: function(data) {
                     var plotSelect = $('select[name="plot"]');
                     plotSelect.empty();
-                    $.each(data, function(index, item) {
-                        var selected = <?php echo isset($_SESSION['plot']) ? $_SESSION['plot'] : 'null' ?> == item.plot_id ? 'selected' : '';
-                        plotSelect.append(new Option(item.description, item.plot_id, false, selected));
-                    });
+                    
+                    if(data.length > 0) {
+                        $.each(data, function(index, item) {
+                            plotSelect.append(new Option(item.description, item.plot_id));
+                        });
+                    } else {
+                        plotSelect.append(new Option('No available plots in this section', ''));
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error fetching plots:', error);
+                    var plotSelect = $('select[name="plot"]');
+                    plotSelect.empty();
+                    plotSelect.append(new Option('Error loading plots', ''));
                 }
             });
+        }
+
+        // Update plots when section changes
+        $('select[name="section"]').change(function() {
+            var sectionId = $(this).val();
+            updatePlots(sectionId);
         });
     });
 </script>

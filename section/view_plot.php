@@ -73,7 +73,10 @@
               <input type=\"hidden\" value=\"{$row['plot_id']}\" name=\"plot_id\">";
               echo "<p class=\"mb-1\">
                         <span class=\"badge w-100 
-                            ".($row['status_desc'] == 'occupied' ? 'bg-danger' : ($row['status_desc'] == 'pending' ? 'bg-warning' : 'bg-success'))."\">
+                            ".($row['status_desc'] == 'occupied' ? 'bg-danger' :
+                                ($row['status_desc'] == 'pending' ? 'bg-warning' :
+                                ($row['status_desc'] == 'reserved' ? 'bg-info' : 'bg-success')))
+                            ."\">
                             ".ucfirst($row['status_desc'])."
                         </span>
                       </p>";
@@ -100,7 +103,7 @@
                 } elseif (($row['status_desc'] == 'occupied') || ($row['status_desc'] == 'reserved')) {
                   echo "<button class=\"btn btn-secondary btn-sm w-100 fw-bold\" disabled>Unavailable</button>";
                 } elseif ($row['status_desc'] == 'pending') {
-                  echo "<button class=\"btn btn-secondary btn-sm w-100 fw-bold\" disabled>A reservation is in process</button>";
+                  echo "<button class=\"btn btn-secondary btn-sm w-100 fw-bold\" disabled>In Reservation Process</button>";
                 }
               }
             echo "</div>
