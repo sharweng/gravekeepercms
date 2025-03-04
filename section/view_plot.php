@@ -71,6 +71,12 @@
               <h5 class=\"card-title fw-bold text-truncate\">{$row['plot_desc']}</h5>
               <p class='fw-bold text-success'>₱".number_format($row['price'], 2)."</p>
               <input type=\"hidden\" value=\"{$row['plot_id']}\" name=\"plot_id\">";
+              echo "<p class=\"mb-1\">
+                        <span class=\"badge w-100 
+                            ".($row['status_desc'] == 'occupied' ? 'bg-danger' : ($row['status_desc'] == 'pending' ? 'bg-warning' : 'bg-success'))."\">
+                            ".ucfirst($row['status_desc'])."
+                        </span>
+                      </p>";
 
               if($_SESSION['roleDesc'] == 'admin'){
                 echo "<div class=\"d-flex gap-1\">
@@ -84,12 +90,6 @@
                   </form>
                 </div>";
               }else{
-                echo "<p class=\"mb-1\">
-                        <span class=\"badge w-100 
-                            ".($row['status_desc'] == 'occupied' ? 'bg-danger' : ($row['status_desc'] == 'pending' ? 'bg-warning' : 'bg-success'))."\">
-                            ".ucfirst($row['status_desc'])."
-                        </span>
-                      </p>";
 
                 if ($row['status_desc'] !== 'occupied' && $row['status_desc'] !== 'pending' && $row['status_desc'] !== 'reserved') {
                   echo "<form action=\"/gravekeepercms/reservation/confirm_reservation.php?section={$sec_id}&plot={$row['plot_id']}\" method=\"post\">
@@ -97,7 +97,7 @@
                           <input type=\"hidden\" name=\"section_id\" value=\"{$sec_id}\">
                           <button type=\"submit\" class=\"btn btn-primary btn-sm w-100 fw-bold\">RESERVE</button>
                         </form>";
-                } elseif ($row['status_desc'] == 'occupied') {
+                } elseif (($row['status_desc'] == 'occupied') || ($row['status_desc'] == 'reserved')) {
                   echo "<button class=\"btn btn-secondary btn-sm w-100 fw-bold\" disabled>Unavailable</button>";
                 } elseif ($row['status_desc'] == 'pending') {
                   echo "<button class=\"btn btn-secondary btn-sm w-100 fw-bold\" disabled>A reservation is in process</button>";

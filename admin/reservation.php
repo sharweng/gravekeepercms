@@ -45,7 +45,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                             <p class="card-text"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
                             <p class="card-text"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>
                             <p class="card-text">
-                                <span class="badge 
+                                <span class="badge w-100
                                     <?php 
                                     echo ($row['status'] === 'pending') ? 'bg-warning' : 
                                          (($row['status'] === 'confirmed') ? 'bg-success' : 'bg-secondary'); 

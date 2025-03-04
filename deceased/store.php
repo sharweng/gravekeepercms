@@ -44,7 +44,7 @@
             if($burial_date < $date_died) {
                 $message .= 'Burial date cannot be earlier than date of death. <br>';
             }
-            if($date_born > $current_date || $date_died > $current_date || $burial_date > $current_date) {
+            if($date_born > $current_date || $date_died > $current_date) {
                 $message .= 'Dates cannot be in the future. <br>';
             }
         }
@@ -109,7 +109,11 @@
 
             } else { // Update
                 $dec_id = $_POST['dec_id'];
-
+                
+                $sql = "SELECT plot_id FROM burial WHERE dec_id = {$dec_id}";
+                $select_res = mysqli_query($conn, $sql);
+                $select_row = mysqli_fetch_assoc($select_res);
+                $plot_before = $select_row['plot_id'];
 
                 // Update deceased table
 
@@ -149,6 +153,12 @@
                     mysqli_stmt_execute($dec_stmt);
                 }
                 
+                // Update plot table
+                $plot_sql = "UPDATE plot SET stat_id = 3
+                              WHERE plot_id=?";
+                $plot_stmt = mysqli_prepare($conn, $plot_sql);
+                mysqli_stmt_bind_param($plot_stmt, "i", $plot_before);
+                mysqli_stmt_execute($plot_stmt);
 
                 // Update burial table
                 $burial_sql = "UPDATE burial SET burial_date=?, plot_id=?, type_id=? 
@@ -190,7 +200,7 @@
                 unlink('../' . $picture);
             }
 
-            $_SESSION['error'] = "Error " . (isset($_POST['update']) ? "updating" : "adding") . 
+            $_SESSION['message'] = "Error " . (isset($_POST['update']) ? "updating" : "adding") . 
                                 " deceased record. Please try again.";
             header("Location: " . (isset($_POST['update']) ? "edit.php" : "create.php"));
             exit();
