@@ -7,7 +7,11 @@
     $stat_sql = "SELECT * FROM status";
     $stat_res = mysqli_query($conn, $stat_sql);
 
-    $plot_id = $_POST['plot_id'];
+    if(isset($_POST['plot_id']))
+        $plot_id = $_POST['plot_id'];
+    else
+        $plot_id = $_GET['id'];
+    
     $plot_sql = "SELECT * FROM plot WHERE plot_id = $plot_id";
     $plot_res = mysqli_query($conn, $plot_sql);
     $plot_row = mysqli_fetch_assoc($plot_res);
@@ -44,7 +48,7 @@
                         <select class="form-select signin-bottom mb-2" name="status">
                             <?php
                                 while($row = mysqli_fetch_array($stat_res)){
-                                    if($row['stat_id'] == 3 || $row['stat_id'] == 4)
+                                    if($row['stat_id'] == 3 || $row['stat_id'] == 4 || $row['stat_id'] == 5 || $row['stat_id'] == 7)
                                         if($plot_row['stat_id'] == $row['stat_id'])
                                             echo "<option selected value=\"{$row['stat_id']}\">{$row['description']}</option>";
                                         else
@@ -53,6 +57,12 @@
                             ?>
                         </select>
                         <label for="floatingInput">Status</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control signin-bottom" id="floatingInput" name="price" placeholder="price" value="<?php
+                                                echo $plot_row['price'];
+                                        ?>">
+                        <label for="floatingInput">Price</label>
                     </div>
                     <input type="hidden" name="plot_id" value="<?php echo $plot_id ?>"/>
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="update" type="submit">Update</button>

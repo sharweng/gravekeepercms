@@ -36,15 +36,22 @@
                     <h1 class="h1 mb-3 fw-bold text-center">Create Plot</h1>
                     <?php include("../includes/alert.php"); ?>
                     <div class="form-floating">
-                        <select class="form-select signin-bottom mb-2" name="status">
+                        <select class="form-select signin-top" name="status">
                             <?php
                                 while($row = mysqli_fetch_array($stat_res)){
-                                    if($row['stat_id'] == 3 || $row['stat_id'] == 4)
+                                    if($row['stat_id'] == 3 || $row['stat_id'] == 4 || $row['stat_id'] == 5 || $row['stat_id'] == 7)
                                         echo "<option value=\"{$row['stat_id']}\">{$row['description']}</option>";
                                 }
                             ?>
                         </select>
                         <label for="floatingInput">Status</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control signin-bottom" id="floatingInput" name="price" placeholder="price" value="<?php
+                                            if(isset($_SESSION['price'])){
+                                                echo $_SESSION['price'];
+                                        }?>">
+                        <label for="floatingInput">Price</label>
                     </div>
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="create" type="submit">Create</button>
                 </form>
