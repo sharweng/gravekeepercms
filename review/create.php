@@ -41,7 +41,11 @@
                         else
                             echo "action=\"store.php\"";
                         ?>>
-                    <h1 class="h1 mb-3 fw-bold text-center">Create Review</h1>
+                    <?php if($mode == 'user')
+                            echo "<h1 class=\"h1 mb-3 fw-bold text-center\">Make a Review</h1>";
+                        else
+                            echo "<h1 class=\"h1 mb-3 fw-bold text-center\">Create Review</h1>";
+                    ?>
                     <?php include("../includes/alert.php"); 
                     if(($_SESSION['roleDesc'] == 'admin')&&($mode != 'user')){
                         echo "<div class=\"form-floating\">
@@ -76,7 +80,9 @@
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="submit-review" type="submit">Save Review</button>
                 </form>
                 <div class=" d-flex justify-content-center mt-2">
-                    <a <?php if($mode == 'user')
+                    <a <?php if($mode == 'user' && $_GET['after'] == 'reserve')
+                            echo "href=\"/gravekeepercms/\"";
+                        elseif($mode == 'user')
                             echo "href=\"/gravekeepercms/review/index.php?mode=user\"";
                         else
                             echo "href=\"/gravekeepercms/review/\"";

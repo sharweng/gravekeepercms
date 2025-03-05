@@ -60,12 +60,12 @@ $plot_price = number_format($plot['price'], 2);
     <h2 class="text-center fw-bold">Reservation Confirmation</h2>
     <div class="card">
         <div class="card-body">
-            <h3 class="card-title"><?php echo htmlspecialchars($section['sec_name']); ?></h3>
+            <h3 class="card-title fw-bold"><?php echo htmlspecialchars($section['sec_name']).' - '.htmlspecialchars($plot['description']); ?></h3>
             <h4>Plot Details</h4>
-            <p><strong>Description:</strong> <?php echo htmlspecialchars($plot['description']); ?></p>
-            <p><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $plot_price; ?></span></p>
-            <p><strong>Reserved by:</strong> <?php echo htmlspecialchars($user_name); ?></p>
-            <p><strong>Date Placed:</strong> <?php echo date("Y-m-d H:i:s"); ?></p>
+            <p class="mb-0"><strong>Description:</strong> <?php echo htmlspecialchars($plot['description']); ?></p>
+            <p class="mb-0"><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $plot_price; ?></span></p>
+            <p class="mb-0"><strong>Reserved by:</strong> <?php echo htmlspecialchars($user_name); ?></p>
+            <p class="mb-0"><strong>Date Placed:</strong> <?php echo date("Y-m-d H:i:s"); ?></p>
         </div>
     </div>
 
@@ -77,7 +77,7 @@ $plot_price = number_format($plot['price'], 2);
         <input type="hidden" name="price" value="<?php echo htmlspecialchars($plot['price']); ?>">
         
         <!-- Burial Type Selection -->
-        <div class="mb-3">
+        <div class="mb-3 mt-2">
             <label for="type_id" class="form-label">Select Burial Type</label>
             <select class="form-select" id="type_id" name="type_id" required>
                 <option value="" disabled selected>Choose a burial type</option>
@@ -89,10 +89,10 @@ $plot_price = number_format($plot['price'], 2);
             </select>
         </div>
         
-        <button type="submit" class="btn btn-success mt-3">Confirm Reservation</button>
+        <button type="submit" class="btn btn-success">Confirm Reservation</button>
     </form>
 
-    <a href="/gravekeepercms/section/" class="btn btn-primary mt-3">Return</a>
+    <a href="/gravekeepercms/section/" class="btn btn-primary mt-2">Return</a>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>

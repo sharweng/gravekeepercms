@@ -30,7 +30,7 @@ try {
 
     mysqli_commit($conn); // Commit transaction
 
-    echo "<script>alert('Reservation successful! Status: Pending'); window.location.href='/gravekeepercms/section/';</script>";
+    echo "<script>alert('Reservation successful! Status: Pending'); window.location.href='/gravekeepercms/review/create.php?mode=user&after=reserve';</script>";
 } catch (Exception $e) {
     mysqli_rollback($conn); // Rollback if something goes wrong
     echo "<script>alert('Reservation failed. Please try again.'); window.location.href='/gravekeepercms/section/';</script>";
