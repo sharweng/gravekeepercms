@@ -1,17 +1,24 @@
 <?php
 session_start();
-include("../includes/config.php");
-include("../includes/header.php");
+include("includes/config.php");
+include("includes/header.php");
 
-// Fetch all reservations with user details and plot price
+// Ensure user is logged in
+$user_id = $_SESSION['user_id'] ?? null;
+if (!$user_id) {
+    echo "<script>alert('You must be logged in to view reservations.'); window.location.href='login.php';</script>";
+    exit();
+}
+
+// Fetch reservations for the logged-in user, including burial type and price
 $reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, s.description AS status, 
-                      sec.sec_name, p.description AS plot_desc, p.price, 
-                      u.name AS user_name, u.email
+                      sec.sec_name, p.description AS plot_desc, p.price, bt.description AS burial_type
                FROM reservation r
                JOIN status s ON r.stat_id = s.stat_id
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
-               JOIN user u ON r.user_id = u.user_id
+               JOIN bur_type bt ON r.type_id = bt.type_id
+               WHERE r.user_id = '$user_id' 
                ORDER BY r.reserv_id DESC";
 
 $reserv_result = mysqli_query($conn, $reserv_sql);
@@ -22,16 +29,16 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Manage Reservations</title>
+    <title>My Reservations</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        <?php include('../includes/styles/style.css'); ?>
+        <?php include('includes/styles/style.css'); ?>
     </style>
 </head>
 <body>
 <div class="container mt-4">
-    <h2 class="text-center fw-bold">Manage Reservations</h2>
+    <h2 class="text-center fw-bold">My Reservations</h2>
 
     <div class="row">
         <?php if (mysqli_num_rows($reserv_result) > 0): ?>
@@ -41,10 +48,9 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                 <div class="col-md-6 col-lg-4">
                     <div class="card mb-3 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo htmlspecialchars($row['user_name']); ?></h5>
-                            <p class="card-text"><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
-                            <p class="card-text"><strong>Section:</strong> <?php echo htmlspecialchars($row['sec_name']); ?></p>
+                            <h5 class="card-title"><?php echo htmlspecialchars($row['sec_name']); ?></h5>
                             <p class="card-text"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
+                            <p class="card-text"><strong>Burial Type:</strong> <?php echo htmlspecialchars($row['burial_type']); ?></p>
                             <p class="card-text"><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $formatted_price; ?></span></p>
                             <p class="card-text"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
                             <p class="card-text"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>
@@ -59,12 +65,9 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                             </p>
 
                             <?php if ($row['status'] === 'pending'): ?>
-                                <form action="update_reservation.php" method="POST" class="d-flex gap-2">
+                                <form action="cancel_reservation.php" method="POST">
                                     <input type="hidden" name="reserv_id" value="<?php echo $row['reserv_id']; ?>">
-                                    <button type="submit" name="confirm" class="btn btn-success btn-sm w-100">
-                                        Confirm
-                                    </button>
-                                    <button type="submit" name="cancel" class="btn btn-danger btn-sm w-100" onclick="return confirm('Are you sure you want to cancel this reservation?');">
+                                    <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Are you sure you want to cancel?');">
                                         Cancel
                                     </button>
                                 </form>
@@ -82,8 +85,8 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
         <?php endif; ?>
     </div>
 
-    <a href="\gravekeepercms\" class="btn btn-primary mt-3">Return</a>
+    <a href="/gravekeepercms/" class="btn btn-primary mt-3">Return Home</a>
 </div>
 </body>
-<?php include("../includes/footer.php"); ?>
+<?php include("includes/footer.php"); ?>
 </html>

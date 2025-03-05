@@ -3,13 +3,15 @@ session_start();
 include("../includes/config.php");
 include("../includes/header.php");
 
-// Fetch all reservations with user details
+// Fetch all reservations with user details and burial type
 $reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, s.description AS status, 
-                      sec.sec_name, p.description AS plot_desc, u.name AS user_name, u.email
+                      sec.sec_name, p.description AS plot_desc, p.price, 
+                      u.name AS user_name, u.email, bt.description AS burial_type
                FROM reservation r
                JOIN status s ON r.stat_id = s.stat_id
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
+               JOIN bur_type bt ON r.type_id = bt.type_id
                JOIN user u ON r.user_id = u.user_id
                ORDER BY r.reserv_id DESC";
 
@@ -34,7 +36,9 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
 
     <div class="row">
         <?php if (mysqli_num_rows($reserv_result) > 0): ?>
-            <?php while ($row = mysqli_fetch_assoc($reserv_result)): ?>
+            <?php while ($row = mysqli_fetch_assoc($reserv_result)): 
+                $formatted_price = number_format($row['price'], 2);
+            ?>
                 <div class="col-md-6 col-lg-4">
                     <div class="card mb-3 shadow-sm">
                         <div class="card-body">
@@ -42,6 +46,8 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                             <p class="card-text"><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
                             <p class="card-text"><strong>Section:</strong> <?php echo htmlspecialchars($row['sec_name']); ?></p>
                             <p class="card-text"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
+                            <p class="card-text"><strong>Burial Type:</strong> <?php echo htmlspecialchars($row['burial_type']); ?></p>
+                            <p class="card-text"><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $formatted_price; ?></span></p>
                             <p class="card-text"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
                             <p class="card-text"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>
                             <p class="card-text">

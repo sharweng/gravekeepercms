@@ -34,6 +34,10 @@ $plot_sql = "SELECT * FROM plot WHERE plot_id = '$plot_id'";
 $plot_result = mysqli_query($conn, $plot_sql);
 $plot = mysqli_fetch_assoc($plot_result);
 
+// Fetch burial types
+$burial_types_sql = "SELECT * FROM bur_type";
+$burial_types_result = mysqli_query($conn, $burial_types_sql);
+
 // Format price
 $plot_price = number_format($plot['price'], 2);
 ?>
@@ -59,7 +63,6 @@ $plot_price = number_format($plot['price'], 2);
             <h3 class="card-title"><?php echo htmlspecialchars($section['sec_name']); ?></h3>
             <h4>Plot Details</h4>
             <p><strong>Description:</strong> <?php echo htmlspecialchars($plot['description']); ?></p>
-            <p><strong>Location:</strong> <?php echo htmlspecialchars($plot['location'] ?? 'Not specified'); ?></p>
             <p><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $plot_price; ?></span></p>
             <p><strong>Reserved by:</strong> <?php echo htmlspecialchars($user_name); ?></p>
             <p><strong>Date Placed:</strong> <?php echo date("Y-m-d H:i:s"); ?></p>
@@ -72,6 +75,20 @@ $plot_price = number_format($plot['price'], 2);
         <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
         <input type="hidden" name="price" value="<?php echo htmlspecialchars($plot['price']); ?>">
+        
+        <!-- Burial Type Selection -->
+        <div class="mb-3">
+            <label for="type_id" class="form-label">Select Burial Type</label>
+            <select class="form-select" id="type_id" name="type_id" required>
+                <option value="" disabled selected>Choose a burial type</option>
+                <?php while ($type = mysqli_fetch_assoc($burial_types_result)) : ?>
+                    <option value="<?php echo htmlspecialchars($type['type_id']); ?>">
+                        <?php echo htmlspecialchars($type['description']); ?>
+                    </option>
+                <?php endwhile; ?>
+            </select>
+        </div>
+        
         <button type="submit" class="btn btn-success mt-3">Confirm Reservation</button>
     </form>
 
