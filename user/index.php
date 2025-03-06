@@ -12,8 +12,24 @@
         FROM user u INNER JOIN role r ON u.role_id = r.role_id
         INNER JOIN status s ON u.stat_id = s.stat_id";
 
+    if(isset($_GET['clear'])){
+        unset($_GET['search']);
+        unset($_GET['role_desc']);
+        unset($_GET['stat_desc']);
+    }
+
     if(isset($_GET['search']))
         $keyword = strtolower(trim($_GET['search']));
+
+    if (!empty($_GET['role_desc'])) {
+        $role_desc = mysqli_real_escape_string($conn, $_GET['role_desc']);
+        $sql .= " AND r.description = '$role_desc'";
+    }
+    
+    if (!empty($_GET['stat_desc'])) {
+        $stat_desc = mysqli_real_escape_string($conn, $_GET['stat_desc']);
+        $sql .= " AND s.description = '$stat_desc'";
+    }
 
     if($keyword){
         $sql = $sql . " WHERE u.email LIKE '%{$keyword}%'";
@@ -64,11 +80,37 @@
                             echo "href=\"register.php?mode=admin\">Create</a>";
                 ?>
             </div>
-            <form class="d-flex gap-1" method="get" action="">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
         </main>
+        <form class="row g-2 d-flex align-items-center justify-content-center mb-3" method="get" action="">
+            <div class="col-12 col-sm-6 col-md-4">
+                <label class="form-label small mb-0">Email</label>
+                <input class="form-control" type="search" placeholder="Search by Email" name="search" aria-label="Search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+            </div>
+            <div class="col-4 col-sm-4 col-md-2">
+                <label class="form-label small mb-0">Role</label>
+                <select class="form-control" name="role_desc">
+                    <option value="" selected disabled>Select</option>
+                    <option value="admin" <?= isset($_GET['role_desc']) && $_GET['role_desc'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+                    <option value="user" <?= isset($_GET['role_desc']) && $_GET['role_desc'] == 'user' ? 'selected' : '' ?>>User</option>
+                </select>
+            </div>
+            <div class="col-4 col-sm-4 col-md-2">
+                <label class="form-label small mb-0">Status</label>
+                <select class="form-control" name="stat_desc">
+                    <option value="" selected disabled>Select</option>
+                    <option value="active" <?= isset($_GET['stat_desc']) && $_GET['stat_desc'] == 'active' ? 'selected' : '' ?>>Active</option>
+                    <option value="deactivated" <?= isset($_GET['stat_desc']) && $_GET['stat_desc'] == 'deactivated' ? 'selected' : '' ?>>Deactivated</option>
+                </select>
+            </div>
+            <div class="col-4 col-md-auto">
+                <label class="form-label small mb-0">&nbsp</label>
+                <button class="btn btn-outline-success w-100" type="submit">Search</button>
+            </div>
+            <div class="col-4 col-md-auto">
+                <label class="form-label small mb-0">&nbsp</label>
+                <button class="btn btn-outline-secondary w-100" name="clear" type="submit">Clear</button>
+            </div>
+        </form>
         
             
     </div>
@@ -133,11 +175,11 @@
                             </div>
                             <div class=\"d-flex\">
                                 <div class=\"fw-bold\" style=\"width:65px;\">Role:</div>
-                                <div >{$row['role_desc']}</div>
+                                <div >".ucfirst($row['role_desc'])."</div>
                             </div>
                             <div class=\"d-flex\">
                                 <div class=\"fw-bold\" style=\"width:65px;\">Status:</div>
-                                <div >{$row['stat_desc']}</div>
+                                <div >".ucfirst($row['stat_desc'])."</div>
                             </div>
                         </div>
                         <div class=\"modal-footer\">
