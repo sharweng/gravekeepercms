@@ -32,7 +32,14 @@ $reserv_sql = "SELECT
                LEFT JOIN burial b ON p.plot_id = b.plot_id  -- Join burial to get burial details
                LEFT JOIN bur_type bt ON b.type_id = bt.type_id  -- Get burial type description
                LEFT JOIN deceased d ON b.dec_id = d.dec_id  -- Get deceased details
-               ORDER BY r.stat_id DESC, r.reserv_id DESC";
+               ORDER BY 
+                   CASE 
+                       WHEN COALESCE(s.description, 'canceled') = 'pending' THEN 1 
+                       WHEN COALESCE(s.description, 'canceled') = 'confirmed' THEN 2 
+                       WHEN COALESCE(s.description, 'canceled') = 'canceled' THEN 3 
+                       ELSE 4 
+                   END,
+                   r.reserv_id DESC";
 
 $reserv_result = mysqli_query($conn, $reserv_sql);
 ?>
@@ -57,7 +64,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
         <?php if (mysqli_num_rows($reserv_result) > 0): ?>
             <?php while ($row = mysqli_fetch_assoc($reserv_result)): 
                 $formatted_price = number_format($row['price'], 2);
-                if($row['status']==='confirmed')
+                if($row['status']==='confirmed'||$row['status']==='pending')
                     echo "<div class=\"modal fade\" id=\"exampleModal{$row['reserv_id']}\" tabindex=\"-1\" aria-labelledby=\"reservationModalLabel\" aria-hidden=\"true\">
     <div class=\"modal-dialog modal-dialog-centered\">
         <div class=\"modal-content\">
@@ -134,7 +141,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
 </div>";
             ?>
                 <div class="col-md-6 col-lg-4">
-                    <div class="card mb-3 shadow-sm <?php if($row['status']==='confirmed')
+                    <div class="card mb-3 shadow-sm <?php if($row['status']==='confirmed'||$row['status']==='pending')
                                                                 echo "enlarge\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['reserv_id']}\""; ?>">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($row['user_name']); ?></h5>

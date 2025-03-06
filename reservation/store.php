@@ -79,10 +79,12 @@ $error_message = '';
 
 // Validate inputs
 if (!validateInputs($_POST, $error_message)) {
-    $_SESSION['message'] = $error_message;
-    // Redirect back to the confirmation page with the necessary parameters
-    header("Location: confirm_reservation.php?plot=$plot_id&section=$section_id");
-    exit();
+    if(!empty($error_message)){
+        $_SESSION['message'] = $error_message;
+        // Redirect back to the confirmation page with the necessary parameters
+        header("Location: confirm_reservation.php?plot=$plot_id&section=$section_id");
+        exit();
+    }
 }
 
 mysqli_begin_transaction($conn); // Start transaction
@@ -144,7 +146,7 @@ try {
     $_SESSION['date_born'] = '';
     $_SESSION['date_died'] = '';
     $_SESSION['burial_date'] = '';
-    $_SESSION['message'] = '';
+    unset($_SESSION['message']);
 
     echo "<script>alert('Reservation successful! Status: Pending'); window.location.href='/gravekeepercms/review/create.php?mode=user&after=reserve';</script>";
 } catch (Exception $e) {

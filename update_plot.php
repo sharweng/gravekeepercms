@@ -6,7 +6,7 @@ date_default_timezone_set("Asia/Manila");
 $today = date("Y-m-d");
 
 // Query to find plots with today's burial date
-$burial_sql = "SELECT plot_id FROM burial WHERE burial_date = ?";
+$burial_sql = "SELECT b.plot_id FROM burial b INNER JOIN plot p ON b.plot_id = p.plot_id WHERE b.burial_date = ? AND p.stat_id = 7";
 $stmt = mysqli_prepare($conn, $burial_sql);
 mysqli_stmt_bind_param($stmt, "s", $today);
 mysqli_stmt_execute($stmt);
