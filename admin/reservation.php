@@ -1,16 +1,17 @@
 <?php
-  error_reporting(E_ALL);
-  ini_set('display_errors', 1);
-  session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+session_start();
 include("../includes/config.php");
 include("../includes/header.php");
 
-// Fetch all reservations with user details and burial type
-$reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, s.description AS status, 
+// Fetch all reservations with user details
+$reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, 
+                      COALESCE(s.description, 'canceled') AS status, 
                       sec.sec_name, p.description AS plot_desc, p.price, 
                       u.name AS user_name, u.email
                FROM reservation r
-               JOIN status s ON r.stat_id = s.stat_id
+               LEFT JOIN status s ON r.stat_id = s.stat_id
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
                JOIN user u ON r.user_id = u.user_id
@@ -54,7 +55,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                                 <span class="badge w-100
                                     <?php 
                                     echo ($row['status'] === 'pending') ? 'bg-warning' : 
-                                         (($row['status'] === 'confirmed') ? 'bg-success' : 'bg-secondary'); 
+                                         (($row['status'] === 'confirmed') ? 'bg-success' : 'bg-danger'); 
                                     ?>">
                                     <?php echo htmlspecialchars($row['status']); ?>
                                 </span>

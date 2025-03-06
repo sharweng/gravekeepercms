@@ -11,10 +11,11 @@ if (!$user_id) {
 }
 
 // Fetch reservations for the logged-in user, including burial type and price
-$reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, s.description AS status, 
+$reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, 
+                      COALESCE(s.description, 'canceled') AS status, 
                       sec.sec_name, p.description AS plot_desc, p.price
                FROM reservation r
-               JOIN status s ON r.stat_id = s.stat_id
+               LEFT JOIN status s ON r.stat_id = s.stat_id  -- LEFT JOIN to include NULL (canceled) statuses
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
                WHERE r.user_id = '$user_id' 
@@ -56,7 +57,8 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                                 <span class="badge w-100 
                                     <?php 
                                     echo ($row['status'] === 'pending') ? 'bg-warning' : 
-                                         (($row['status'] === 'confirmed') ? 'bg-success' : 'bg-secondary'); 
+                                         (($row['status'] === 'confirmed') ? 'bg-success' : 
+                                         (($row['status'] === 'canceled') ? 'bg-danger' : 'bg-secondary')); 
                                     ?>">
                                     <?php echo htmlspecialchars($row['status']); ?>
                                 </span>
