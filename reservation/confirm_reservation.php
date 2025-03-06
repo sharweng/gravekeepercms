@@ -58,7 +58,7 @@ $plot_price = number_format($plot['price'], 2);
 <body>
 <div class="container mt-4">
     <h2 class="text-center fw-bold">Reservation Confirmation</h2>
-    <div class="card">
+    <div class="card mb-2">
         <div class="card-body">
             <h3 class="card-title fw-bold"><?php echo htmlspecialchars($section['sec_name']).' - '.htmlspecialchars($plot['description']); ?></h3>
             <h4>Plot Details</h4>
@@ -68,31 +68,83 @@ $plot_price = number_format($plot['price'], 2);
             <p class="mb-0"><strong>Date Placed:</strong> <?php echo date("Y-m-d H:i:s"); ?></p>
         </div>
     </div>
-
-    <!-- Form to confirm reservation -->
-    <form action="store.php" method="POST">
+    <?php include("../includes/alert.php"); ?>
+    <!-- Form to confirm reservation with burial details -->
+    <form action="store.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="plot_id" value="<?php echo htmlspecialchars($plot_id); ?>">
         <input type="hidden" name="section_id" value="<?php echo htmlspecialchars($section_id); ?>">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
         <input type="hidden" name="price" value="<?php echo htmlspecialchars($plot['price']); ?>">
         
-        <!-- Burial Type Selection -->
-        <div class="mb-3 mt-2">
-            <label for="type_id" class="form-label">Select Burial Type</label>
-            <select class="form-select" id="type_id" name="type_id" required>
-                <option value="" disabled selected>Choose a burial type</option>
-                <?php while ($type = mysqli_fetch_assoc($burial_types_result)) : ?>
-                    <option value="<?php echo htmlspecialchars($type['type_id']); ?>">
-                        <?php echo htmlspecialchars($type['description']); ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
+        <!-- Burial Details Section -->
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Burial Details</h4>
+                
+                <!-- Name Fields Row -->
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label for="lname" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name" 
+                            value="<?php echo isset($_SESSION['lname']) ? htmlspecialchars($_SESSION['lname']) : ''; ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="fname" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" 
+                            value="<?php echo isset($_SESSION['fname']) ? htmlspecialchars($_SESSION['fname']) : ''; ?>">
+                    </div>
+                </div>
+                
+                <!-- Birth and Death Date Row -->
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label for="date_born" class="form-label">Date Born</label>
+                        <input type="date" class="form-control" id="date_born" name="date_born" 
+                            value="<?php echo isset($_SESSION['date_born']) ? $_SESSION['date_born'] : ''; ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="date_died" class="form-label">Date Died</label>
+                        <input type="date" class="form-control" id="date_died" name="date_died" 
+                            value="<?php echo isset($_SESSION['date_died']) ? $_SESSION['date_died'] : ''; ?>">
+                    </div>
+                </div>
+                
+                <!-- Burial Date and Type Row -->
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label for="burial_date" class="form-label">Burial Date</label>
+                        <input type="date" class="form-control" id="burial_date" name="burial_date" 
+                            value="<?php echo isset($_SESSION['burial_date']) ? $_SESSION['burial_date'] : ''; ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="type_id" class="form-label">Burial Type</label>
+                        <select class="form-select" id="type_id" name="type_id" required>
+                            <option value="" disabled selected>Choose a burial type</option>
+                            <?php 
+                            mysqli_data_seek($burial_types_result, 0);
+                            while ($type = mysqli_fetch_assoc($burial_types_result)) : 
+                            ?>
+                                <option value="<?php echo htmlspecialchars($type['type_id']); ?>">
+                                    <?php echo htmlspecialchars($type['description']); ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Photo Upload -->
+                <div class="mb-3">
+                    <label for="img-path" class="form-label">Deceased Photo</label>
+                    <input type="file" class="form-control" id="img-path" name="img-path" accept="image/*">
+                </div>
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-success">Confirm Reservation</button>
-    </form>
 
-    <a href="/gravekeepercms/section/" class="btn btn-primary mt-2">Return</a>
+        <div class="mt-3 mb-3 ">
+            <button type="submit" class="btn btn-success">Confirm Reservation</button>
+            <a href="/gravekeepercms/section/view_plot.php?id=<?php echo $_GET['section'] ?>" class="btn btn-primary">Return</a>
+        </div>
+    </form>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>
