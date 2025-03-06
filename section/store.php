@@ -7,6 +7,8 @@ ini_set('display_errors', 1);
 
     $_SESSION['name'] = trim($_POST['name']);
     $_SESSION['num_plot'] = $_POST['num_plot'];
+    $_SESSION['min_price'] = $_POST['min_price'];
+    $_SESSION['max_price'] = $_POST['max_price'];
 
     if(isset($_POST['create'])){
 
@@ -28,22 +30,48 @@ ini_set('display_errors', 1);
             }
         }
 
+        if(empty($_POST['min_price'])){
+            $_SESSION['message'] = $_SESSION['message'].'Enter the minimum price. <br>';
+        }else{
+            $min_price = $_POST['min_price'];
+            if(!is_numeric($min_price) || $min_price < 0){
+                $_SESSION['message'] = $_SESSION['message'].'Minimum price must be a positive number. <br>';
+            }
+        }
+
+        if(empty($_POST['max_price'])){
+            $_SESSION['message'] = $_SESSION['message'].'Enter the maximum price. <br>';
+        }else{
+            $max_price = $_POST['max_price'];
+            if(!is_numeric($max_price) || $max_price < 0){
+                $_SESSION['message'] = $_SESSION['message'].'Maximum price must be a positive number. <br>';
+            }
+        }
+
+        // Check if max price is greater than or equal to min price
+        if(isset($min_price) && isset($max_price) && $max_price < $min_price){
+            $_SESSION['message'] = $_SESSION['message'].'Maximum price cannot be lower than minimum price. <br>';
+        }
+
         if(empty($_FILES['img-path']['name'][0])){
             $_SESSION['message'] = $_SESSION['message'].'Upload a picture. <br>';
             header("Location: create.php");
         }
 
         if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))&&
-        (preg_match("/^[1-9]\d*$/", $num_plot))){
+        (preg_match("/^[1-9]\d*$/", $num_plot)) && 
+        is_numeric($min_price) && $min_price >= 0 && 
+        is_numeric($max_price) && $max_price >= 0 && 
+        $max_price >= $min_price){
             $source = $_FILES['img-path']['tmp_name'];
             $target = 'images/' . $_FILES['img-path']['name'];
             move_uploaded_file($source, $target) or die("Couldn't copy");
 
             // Insert section using prepared statement
-            $sql = "INSERT INTO section (sec_name, sec_img, num_plot) 
-                    VALUES (?, ?, ?)";
+            $sql = "INSERT INTO section (sec_name, sec_img, num_plot, min_price, max_price) 
+                    VALUES (?, ?, ?, ?, ?)";
             $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "ssi", $name, $target, $num_plot);
+            mysqli_stmt_bind_param($stmt, "ssidi", $name, $target, $num_plot, $min_price, $max_price);
             
             if (mysqli_stmt_execute($stmt)) {
                 // Get last inserted section_id
@@ -51,22 +79,25 @@ ini_set('display_errors', 1);
                 mysqli_stmt_close($stmt);
 
                 // Insert plots using prepared statement
-                $sql = "INSERT INTO plot (description, section_id, stat_id) 
-                        VALUES (?, ?, 3)";
+                $sql = "INSERT INTO plot (description, section_id, stat_id, price) 
+                        VALUES (?, ?, 3, ?)";
                 $stmt = mysqli_prepare($conn, $sql);
-                mysqli_stmt_bind_param($stmt, "si", $description, $section_id);
+                mysqli_stmt_bind_param($stmt, "sid", $description, $section_id, $price);
 
-                // Loop through num_plot and insert each plot
+                // Loop through num_plot and insert each plot with random price
                 for ($i = 1; $i <= $num_plot; $i++) {
                     $description = "Plot $i";
+                    // Generate random price between min and max
+                    $price = rand($min_price * 100, $max_price * 100) / 100;
                     mysqli_stmt_execute($stmt);
                 }
                 mysqli_stmt_close($stmt);
 
                 // Clear session variables and redirect
                 $_SESSION['name'] = '';
-                $_SESSION['desc'] = '';
-                $_SESSION['num_plot'] = '';      
+                $_SESSION['num_plot'] = '';
+                $_SESSION['min_price'] = '';
+                $_SESSION['max_price'] = '';      
                 header("Location: /gravekeepercms/section/");
             } else {
                 die("Error inserting section: " . mysqli_error($conn));
@@ -98,9 +129,35 @@ ini_set('display_errors', 1);
             }
         }
 
+        if(empty($_POST['min_price'])){
+            $_SESSION['message'] = $_SESSION['message'].'Enter the minimum price. <br>';
+        }else{
+            $min_price = $_POST['min_price'];
+            if(!is_numeric($min_price) || $min_price < 0){
+                $_SESSION['message'] = $_SESSION['message'].'Minimum price must be a positive number. <br>';
+            }
+        }
+
+        if(empty($_POST['max_price'])){
+            $_SESSION['message'] = $_SESSION['message'].'Enter the maximum price. <br>';
+        }else{
+            $max_price = $_POST['max_price'];
+            if(!is_numeric($max_price) || $max_price < 0){
+                $_SESSION['message'] = $_SESSION['message'].'Maximum price must be a positive number. <br>';
+            }
+        }
+
+        // Check if max price is greater than or equal to min price
+        if(isset($min_price) && isset($max_price) && $max_price < $min_price){
+            $_SESSION['message'] = $_SESSION['message'].'Maximum price cannot be lower than minimum price. <br>';
+        }
+
         if((preg_match("/^[a-zA-Z0-9\s.,'\"\ -_]{1,50}$/", $name))
-        &&(preg_match("/^[1-9]\d*$/", $num_plot))){
-            $ud_sql = "UPDATE section SET sec_name = '$name', num_plot = $num_plot
+        &&(preg_match("/^[1-9]\d*$/", $num_plot))
+        && is_numeric($min_price) && $min_price >= 0
+        && is_numeric($max_price) && $max_price >= 0
+        && $max_price >= $min_price){
+            $ud_sql = "UPDATE section SET sec_name = '$name', num_plot = $num_plot, min_price = $min_price, max_price = $max_price
             WHERE section_id = $u_id";
 
             $query = "SELECT num_plot FROM section WHERE section_id = ?";
@@ -133,19 +190,21 @@ ini_set('display_errors', 1);
 
                 echo $img_path.'<br>'.$target;
 
-                $ud_sql = "UPDATE section SET sec_name = '$name', sec_img = '$target', num_plot = $num_plot
+                $ud_sql = "UPDATE section SET sec_name = '$name', sec_img = '$target', num_plot = $num_plot, min_price = $min_price, max_price = $max_price
                 WHERE section_id = $u_id";
             }
             echo $ud_sql;
 
             if ($num_plot > $current_num_plot) {
                 // Add new plots
-                $sql = "INSERT INTO plot (description, section_id, stat_id) VALUES (?, ?, 3)";
+                $sql = "INSERT INTO plot (description, section_id, stat_id, price) VALUES (?, ?, 3, ?)";
                 $stmt = mysqli_prepare($conn, $sql);
-                mysqli_stmt_bind_param($stmt, "si", $description, $u_id);
+                mysqli_stmt_bind_param($stmt, "sid", $description, $u_id, $price);
         
                 for ($i = $current_num_plot + 1; $i <= $num_plot; $i++) {
                     $description = "Plot $i";
+                    // Generate random price between min and max
+                    $price = rand($min_price * 100, $max_price * 100) / 100;
                     mysqli_stmt_execute($stmt);
                 }
                 mysqli_stmt_close($stmt);
@@ -162,8 +221,9 @@ ini_set('display_errors', 1);
             $result = mysqli_query($conn, $ud_sql);
             if($result){
                 $_SESSION['name'] = '';
-                $_SESSION['desc'] = '';
-                $_SESSION['num_plot'] = '';      
+                $_SESSION['num_plot'] = '';
+                $_SESSION['min_price'] = '';
+                $_SESSION['max_price'] = '';      
                 
                 header("Location: /gravekeepercms/section/");
             }

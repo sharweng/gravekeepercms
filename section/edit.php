@@ -54,6 +54,18 @@
                                         ?>">
                         <label for="floatingInput">Number of Plots</label>
                     </div>
+                    <div class="form-floating">
+                        <input type="number" class="form-control signin-middle" id="floatingInput" name="min_price" placeholder="min_price" min="0" step="0.01" value="<?php
+                                            echo $row['min_price']
+                                        ?>">
+                        <label for="floatingInput">Minimum Price</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="number" class="form-control signin-middle" id="floatingInput" name="max_price" placeholder="max_price" min="0" step="0.01" value="<?php
+                                            echo $row['max_price']
+                                        ?>">
+                        <label for="floatingInput">Maximum Price</label>
+                    </div>
                     <input type="file" class="form-control signin-bottom mb-2" name="img-path" placeholder="img-path" accept="image/*">
                     <button class="btn btn-darker-grey w-100 py-2 border-darker-grey" name="update" type="submit">Update</button>
                 </form>

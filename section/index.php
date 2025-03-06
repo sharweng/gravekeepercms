@@ -19,6 +19,33 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         <?php include('../includes/styles/style.css') ?>
+        
+        /* Add custom styles for consistent image display */
+        .section-image-container {
+            width: 220px;
+            height: 220px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        .section-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* This ensures the image covers the entire container */
+        }
+        
+        .section-card {
+            width: 230px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .price {
+          font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -46,10 +73,13 @@
     <?php 
       if($result->num_rows!=0){
         while($row = mysqli_fetch_array($result)){
-          echo "<a href=\"/gravekeepercms/section/view_plot.php?id={$row['section_id']}\" class=\" text-decoration-none card enlarge p-1\" style=\"width: 230px; height:\">
-            <img src=\"/gravekeepercms/section/{$row['sec_img']}\" class=\"card-img-top\" style\"=width: 220px; height: 220px; object-fit: cover;\">
+          echo "<a href=\"/gravekeepercms/section/view_plot.php?id={$row['section_id']}\" class=\"text-decoration-none card enlarge p-1 section-card\">
+            <div class=\"section-image-container\">
+              <img src=\"/gravekeepercms/section/{$row['sec_img']}\" class=\"section-image\" alt=\"{$row['sec_name']}\">
+            </div>
             <div class=\"card-body \">
-              <h5 class=\"card-title fw-bold text-truncate\">{$row['sec_name']}</h5>
+              <h5 class=\"card-title fw-bold text-truncate mb-1\">{$row['sec_name']}</h5>
+              <h5 class=\"price fw-bold text-success\">₱". number_format($row['min_price'])." - ₱". number_format($row['max_price'])."</h5>
               <input type=\"hidden\" value=\"{$row['section_id']}\" name=\"section_id\">";
               if($_SESSION['roleDesc'] == 'admin'){
                 echo "<div class=\"d-flex gap-1\">
@@ -97,4 +127,3 @@
   include("../includes/footer.php");
 ?>
 </html>
-
