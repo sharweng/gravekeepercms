@@ -4,7 +4,8 @@
     include('../includes/header.php');
 
     $mode = $_GET['mode'];
-    if($mode != 'user')
+    $from = $_GET['from'];
+    if($mode != 'user'&&$from != 'header')
         include('../includes/notAdminRedirect.php');
     
     $sql = "SELECT r.rev_id, r.user_id, r.rev_msg, r.rev_num, u.email FROM review r INNER JOIN user u ON u.user_id = r.user_id";
@@ -49,12 +50,17 @@
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
         <main class="form-signin m-auto w-100 d-flex gap-1" >
             <?php 
-                echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/\" style=\"width: 40px;\"><</a>
+                if($from != 'header'){
+                    echo "<a class=\"btn btn-darker-grey py-2 border-darker-grey fw-bold\" href=\"/gravekeepercms/\" style=\"width: 40px;\"><</a>
                       <a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" "; 
                         if($mode == 'user')
                             echo "href=\"create.php?mode=user\">Create</a>";
                         else
                             echo "href=\"create.php\">Create</a>";
+                }else{
+                    echo "<a class=\"btn btn-darker-grey w-100 py-2 border-darker-grey\" href=\"/gravekeepercms/\">Back</a>";
+                }
+                
             ?>
         </main>
     </div>
