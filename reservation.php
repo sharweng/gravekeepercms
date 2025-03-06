@@ -11,13 +11,29 @@ if (!$user_id) {
 }
 
 // Fetch reservations for the logged-in user, including burial type and price
-$reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, 
-                      COALESCE(s.description, 'canceled') AS status, 
-                      sec.sec_name, p.description AS plot_desc, p.price
+$reserv_sql = "SELECT 
+                   r.reserv_id, 
+                   r.date_placed, 
+                   r.date_reserved, 
+                   COALESCE(s.description, 'canceled') AS status, 
+                   sec.sec_name, 
+                   p.description AS plot_desc, 
+                   p.price, 
+                   b.burial_id, 
+                   b.burial_date, 
+                   bt.description AS burial_type, 
+                   d.lname AS deceased_lname, 
+                   d.fname AS deceased_fname, 
+                   d.date_born, 
+                   d.date_died, 
+                   d.picture AS deceased_picture
                FROM reservation r
                LEFT JOIN status s ON r.stat_id = s.stat_id  -- LEFT JOIN to include NULL (canceled) statuses
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
+               LEFT JOIN burial b ON p.plot_id = b.plot_id  -- Join burial to get burial details
+               LEFT JOIN bur_type bt ON b.type_id = bt.type_id  -- Get burial type description
+               LEFT JOIN deceased d ON b.dec_id = d.dec_id  -- Get deceased details
                WHERE r.user_id = '$user_id' 
                ORDER BY r.stat_id DESC, r.reserv_id DESC";
 
@@ -44,9 +60,85 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
         <?php if (mysqli_num_rows($reserv_result) > 0): ?>
             <?php while ($row = mysqli_fetch_assoc($reserv_result)): 
                 $formatted_price = number_format($row['price'], 2);
+                if($row['status']==='confirmed')
+                    echo "<div class=\"modal fade\" id=\"exampleModal{$row['reserv_id']}\" tabindex=\"-1\" aria-labelledby=\"reservationModalLabel\" aria-hidden=\"true\">
+    <div class=\"modal-dialog modal-dialog-centered\">
+        <div class=\"modal-content\">
+            <div class=\"modal-header\">
+                <h5 class=\"modal-title\">Reservation Details</h5>
+                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
+            </div>
+            <div class=\"modal-body text-wrap\">
+                <!-- Reservation Info -->
+                <h5 class=\"fw-bold\">Reservation Info</h5>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Reservation ID:</div>
+                    <div>{$row['reserv_id']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Date Placed:</div>
+                    <div>{$row['date_placed']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Date Reserved:</div>
+                    <div>{$row['date_reserved']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Status:</div>
+                    <div>{$row['status']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Section-Plot:</div>
+                    <div>{$row['sec_name']} - {$row['plot_desc']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Price:</div>
+                    <div>₱{$row['price']}</div>
+                </div>
+
+                <hr>
+
+                <!-- Burial Details -->
+                <h5 class=\"fw-bold\">Burial Details</h5>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Burial Date:</div>
+                    <div>{$row['burial_date']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Burial Type:</div>
+                    <div>{$row['burial_type']}</div>
+                </div>
+
+                <hr>
+
+                <!-- Deceased Info -->
+                <h5 class=\"fw-bold\">Deceased Info</h5>
+                <div class=\"text-center mb-3\">
+                    <img class=\"object-fit-contain border rounded\" src=\"/gravekeepercms/deceased/{$row['deceased_picture']}\" alt=\"\" style=\"width: 100px; height: 100px\">
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Name:</div>
+                    <div>{$row['deceased_lname']}, {$row['deceased_fname']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Date Born:</div>
+                    <div>{$row['date_born']}</div>
+                </div>
+                <div class=\"d-flex\">
+                    <div class=\"fw-bold\" style=\"width:140px;\">Date Died:</div>
+                    <div>{$row['date_died']}</div>
+                </div>
+            </div>
+            <div class=\"modal-footer\">
+                <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Close</button>
+            </div>
+        </div>
+    </div>
+</div>";
             ?>
                 <div class="col-md-6 col-lg-4">
-                    <div class="card mb-3 shadow-sm">
+                    <div class="card mb-3 shadow-sm <?php if($row['status']==='confirmed')
+                                                                echo "enlarge\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['reserv_id']}\""; ?>">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($row['sec_name']); ?></h5>
                             <p class="card-text mb-1"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
@@ -60,7 +152,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                                          (($row['status'] === 'confirmed') ? 'bg-success' : 
                                          (($row['status'] === 'canceled') ? 'bg-danger' : 'bg-secondary')); 
                                     ?>">
-                                    <?php echo htmlspecialchars($row['status']); ?>
+                                    <?php echo ucfirst(htmlspecialchars($row['status'])); ?>
                                 </span>
                             </p>
 
