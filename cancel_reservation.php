@@ -43,13 +43,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reserv_id'])) {
             $_SESSION['success'] = "Reservation canceled successfully, and plot is now available.";
         } catch (Exception $e) {
             mysqli_rollback($conn); // Rollback changes if something fails
-            $_SESSION['error'] = "Failed to cancel reservation. Please try again.";
+            $_SESSION['message'] = "Failed to cancel reservation. Please try again.";
         }
     } else {
-        $_SESSION['error'] = "Invalid reservation or already processed.";
+        $_SESSION['message'] = "Invalid reservation or already processed.";
     }
 } else {
-    $_SESSION['error'] = "Invalid request.";
+    $_SESSION['message'] = "Invalid request.";
 }
 
 header("Location: reservation.php"); // Redirect to user's reservations page

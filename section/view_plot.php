@@ -119,7 +119,7 @@
                         </div>
                         <div class=\"modal-body\">
                             <b>Section:</b> {$sec_id} <br>
-                            <b>Status:</b> {$row['status_desc']} <br>
+                            <b>Status:</b> ".ucfirst($row['status_desc'])." <br>
                             <b>Price:</b> ₱".number_format($row['price'], 2)."
                         </div>
                         <div class=\"modal-footer\">

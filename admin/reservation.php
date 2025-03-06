@@ -31,9 +31,9 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
     </style>
 </head>
 <body>
-<div class="container mt-4">
+<div class="container mt-4 mb-4">
     <h2 class="text-center fw-bold">Manage Reservations</h2>
-
+    <?php include("../includes/alert.php"); ?>
     <div class="row">
         <?php if (mysqli_num_rows($reserv_result) > 0): ?>
             <?php while ($row = mysqli_fetch_assoc($reserv_result)): 
@@ -43,14 +43,14 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                     <div class="card mb-3 shadow-sm">
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($row['user_name']); ?></h5>
-                            <p class="card-text"><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
-                            <p class="card-text"><strong>Section:</strong> <?php echo htmlspecialchars($row['sec_name']); ?></p>
-                            <p class="card-text"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
-                            <p class="card-text"><strong>Burial Type:</strong> <?php echo htmlspecialchars($row['burial_type']); ?></p>
-                            <p class="card-text"><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $formatted_price; ?></span></p>
-                            <p class="card-text"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
-                            <p class="card-text"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>
-                            <p class="card-text">
+                            <p class="card-text mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
+                            <p class="card-text mb-1"><strong>Section:</strong> <?php echo htmlspecialchars($row['sec_name']); ?></p>
+                            <p class="card-text mb-1"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
+                            <p class="card-text mb-1"><strong>Burial Type:</strong> <?php echo htmlspecialchars($row['burial_type']); ?></p>
+                            <p class="card-text mb-1"><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $formatted_price; ?></span></p>
+                            <p class="card-text mb-1"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
+                            <p class="card-text mb-3"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>
+                            <p class="card-text mb-2">
                                 <span class="badge w-100
                                     <?php 
                                     echo ($row['status'] === 'pending') ? 'bg-warning' : 
@@ -71,7 +71,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                                     </button>
                                 </form>
                             <?php else: ?>
-                                <button class="btn btn-secondary btn-sm w-100 mt-2" disabled>No Action</button>
+                                <button class="btn btn-secondary btn-sm w-100" disabled>No Action</button>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -84,7 +84,7 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
         <?php endif; ?>
     </div>
 
-    <a href="\gravekeepercms\" class="btn btn-primary mt-3">Return</a>
+    <a href="\gravekeepercms\" class="btn btn-primary mt-1">Return</a>
 </div>
 </body>
 <?php include("../includes/footer.php"); ?>
