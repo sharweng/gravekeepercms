@@ -2,6 +2,7 @@
 include("../includes/config.php");
 
 // Get today's date
+date_default_timezone_set("Asia/Manila");
 $today = date("Y-m-d");
 
 // Query to find plots with today's burial date
@@ -19,7 +20,7 @@ try {
 
         // Update plot status to 'occupied'
         $update_plot = "UPDATE plot 
-                        SET stat_id = (SELECT stat_id FROM status WHERE description = 'occupied') 
+                        SET stat_id = 4
                         WHERE plot_id = ?";
         
         $stmt_update = mysqli_prepare($conn, $update_plot);
