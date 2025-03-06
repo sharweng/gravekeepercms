@@ -80,12 +80,10 @@ CREATE TABLE reservation(
     stat_id INT,
     section_id INT,
     plot_id INT,
-    type_id INT NOT NULL,
     user_id INT NOT NULL,
     CONSTRAINT reservation_stat_id_fk FOREIGN KEY (stat_id) REFERENCES status(stat_id) ON DELETE CASCADE,
     CONSTRAINT reservation_section_id_fk FOREIGN KEY (section_id) REFERENCES section(section_id) ON DELETE CASCADE,
     CONSTRAINT reservation_plot_id_fk FOREIGN KEY (plot_id) REFERENCES plot(plot_id) ON DELETE CASCADE, 
-    CONSTRAINT reservation_type_id_fk FOREIGN KEY (type_id) REFERENCES bur_type(type_id) ON DELETE CASCADE,
     CONSTRAINT reservation_user_id_fk FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
 );
 

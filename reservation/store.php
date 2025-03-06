@@ -115,10 +115,10 @@ try {
     $dec_id = mysqli_insert_id($conn);
 
     // Insert reservation record with burial type
-    $reservation_sql = "INSERT INTO reservation (date_placed, date_reserved, stat_id, section_id, plot_id, user_id, type_id) 
-                        VALUES (NOW(), ?, 5, ?, ?, ?, ?)";
+    $reservation_sql = "INSERT INTO reservation (date_placed, date_reserved, stat_id, section_id, plot_id, user_id) 
+                        VALUES (NOW(), ?, 5, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $reservation_sql);
-    mysqli_stmt_bind_param($stmt, "siiii", $_POST['burial_date'], $section_id, $plot_id, $user_id, $type_id);
+    mysqli_stmt_bind_param($stmt, "siii", $_POST['burial_date'], $section_id, $plot_id, $user_id);
     mysqli_stmt_execute($stmt);
     $reserv_id = mysqli_insert_id($conn);
 
