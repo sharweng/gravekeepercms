@@ -48,6 +48,11 @@
     </div>
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
+        <?php if($from != 'header'){ ?>
+            <h2 class="text-center fw-bold m-0 mt-3">Manage Reviews</h2>
+        <?php }else{ ?>
+            <h2 class="text-center fw-bold m-0 mt-3">Reviews</h2>
+        <?php }?>
         <main class="form-signin m-auto w-100 d-flex gap-1" >
             <?php 
                 if($from != 'header'){

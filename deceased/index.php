@@ -109,6 +109,7 @@
     </div>
     <!-- Left half for login form -->
     <div class="col-6 container px-0 d-flex flex-column justify-content-center align-items-center ">
+        <h2 class="text-center fw-bold m-0 mt-3">Manage Deceased</h2>
         <main class="form-signin m-auto w-100 d-grid gap-2" >
             <div class="d-flex w-100 gap-1">
                 <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/" style="width: 40px;"><</a>
