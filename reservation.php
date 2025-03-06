@@ -12,12 +12,11 @@ if (!$user_id) {
 
 // Fetch reservations for the logged-in user, including burial type and price
 $reserv_sql = "SELECT r.reserv_id, r.date_placed, r.date_reserved, s.description AS status, 
-                      sec.sec_name, p.description AS plot_desc, p.price, bt.description AS burial_type
+                      sec.sec_name, p.description AS plot_desc, p.price
                FROM reservation r
                JOIN status s ON r.stat_id = s.stat_id
                JOIN section sec ON r.section_id = sec.section_id
                JOIN plot p ON r.plot_id = p.plot_id
-               JOIN bur_type bt ON r.type_id = bt.type_id
                WHERE r.user_id = '$user_id' 
                ORDER BY r.reserv_id DESC";
 
@@ -50,7 +49,6 @@ $reserv_result = mysqli_query($conn, $reserv_sql);
                         <div class="card-body">
                             <h5 class="card-title"><?php echo htmlspecialchars($row['sec_name']); ?></h5>
                             <p class="card-text mb-1"><strong>Plot:</strong> <?php echo htmlspecialchars($row['plot_desc']); ?></p>
-                            <p class="card-text mb-1"><strong>Burial Type:</strong> <?php echo htmlspecialchars($row['burial_type']); ?></p>
                             <p class="card-text mb-1"><strong>Price:</strong> <span class="text-success fw-bold">₱<?php echo $formatted_price; ?></span></p>
                             <p class="card-text mb-1"><strong>Date Placed:</strong> <?php echo htmlspecialchars($row['date_placed']); ?></p>
                             <p class="card-text mb-3"><strong>Date Reserved:</strong> <?php echo htmlspecialchars($row['date_reserved'] ?? 'Not Set'); ?></p>

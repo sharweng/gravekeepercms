@@ -43,6 +43,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['reserv_id'])) {
                 $_SESSION['success'] = "Reservation confirmed successfully.";
             } elseif (isset($_POST['cancel'])) {
                 // Update reservation status to "canceled"
+
+                $plot_id = $row['plot_id']; // Get the plot_id from the reservation
+                $sel_dec = "SELECT d.dec_id FROM deceased d INNER JOIN burial b ON d.dec_id = b.dec_id
+                    INNER JOIN reservation r ON r.plot_id = b.plot_id WHERE b.plot_id = {$plot_id}";
+                echo $sel_dec;
+                $select_res = mysqli_query($conn, $sel_dec);
+                $select_row = mysqli_fetch_assoc($select_res);
+                $dec_id = $select_row['dec_id'];
+
+                $del_dec = "DELETE FROM deceased WHERE dec_id = ?";
+                $stmt_del_dec = mysqli_prepare($conn, $del_dec);
+                mysqli_stmt_bind_param($stmt_del_dec, "i", $dec_id);
+                mysqli_stmt_execute($stmt_del_dec);
+
                 $update_reserv = "UPDATE reservation 
                                   SET stat_id = (SELECT stat_id FROM status WHERE description = 'canceled') 
                                   WHERE reserv_id = ?";
