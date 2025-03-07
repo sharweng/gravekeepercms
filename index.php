@@ -1,6 +1,5 @@
 <?php
   session_start();
-  include("config.php");
   include("includes/config.php");
   include('includes/header.php');
   include('update_plot.php');

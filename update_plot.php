@@ -1,5 +1,5 @@
 <?php
-include("../includes/config.php");
+include("includes/config.php");
 
 // Get today's date
 date_default_timezone_set("Asia/Manila");
