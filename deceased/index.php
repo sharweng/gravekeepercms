@@ -99,6 +99,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         <?php include('../includes/styles/style.css') ?>
+        
+        /* Add custom styles for sticky sidebar */
+        @media (min-width: 768px) {
+            .sticky-sidebar {
+                position: sticky;
+                top: 20px;
+                height: calc(100vh - 40px);
+                overflow-y: auto;
+            }
+            
+            .scrollable-content {
+                height: calc(100vh - 40px);
+                overflow-y: auto;
+                padding-bottom: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -111,177 +127,186 @@
     
     <div class="container mt-4">
         <div class="row">
-            <!-- Left side - Search and Actions -->
+            <!-- Left side - Search and Actions with sticky positioning -->
             <div class="col-md-3 mb-3">
-                <h2 class="text-center fw-bold mb-3">Manage Deceased</h2>
-                
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <h5 class="mb-0">Search Filters</h5>
+                <div class="sticky-sidebar">
+                    <h2 class="text-center fw-bold mb-3">Manage Deceased</h2>
+                    
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h5 class="mb-0">Search Filters</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="get" action="">
+                                <!-- Preserve mode parameter -->
+                                <?php if($mode): ?>
+                                    <input type="hidden" name="mode" value="<?php echo htmlspecialchars($mode); ?>">
+                                <?php endif; ?>
+                                
+                                <div class="mb-1">
+                                    <label class="form-label small mb-0">Name</label>
+                                    <input class="form-control form-control-sm" type="search" placeholder="Search by Name" name="search" aria-label="Search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                                </div>
+                                
+                                <div class="mb-1">
+                                    <label class="form-label small mb-0">Burial Type</label>
+                                    <select class="form-control form-control-sm" name="burial_type">
+                                        <option value="" selected disabled>Select</option>
+                                        <option value="unassigned" <?= isset($_GET['burial_type']) && $_GET['burial_type'] == 'unassigned' ? 'selected' : '' ?>>Unassigned</option>
+                                        <option value="buried" <?= isset($_GET['burial_type']) && $_GET['burial_type'] == 'buried' ? 'selected' : '' ?>>Buried</option>
+                                        <option value="cremated" <?= isset($_GET['burial_type']) && $_GET['burial_type'] == 'cremated' ? 'selected' : '' ?>>Cremated</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-1">
+                                    <label class="form-label small mb-0">Born</label>
+                                    <input class="form-control form-control-sm" type="date" name="date_born" value="<?= isset($_GET['date_born']) ? $_GET['date_born'] : '' ?>">
+                                </div>
+                                
+                                <div class="mb-1">
+                                    <label class="form-label small mb-0">Died</label>
+                                    <input class="form-control form-control-sm" type="date" name="date_died" value="<?= isset($_GET['date_died']) ? $_GET['date_died'] : '' ?>">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label small mb-0">Burial Date</label>
+                                    <input class="form-control form-control-sm" type="date" name="burial_date" value="<?= isset($_GET['burial_date']) ? $_GET['burial_date'] : '' ?>">
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+                                    <button class="btn btn-sm btn-outline-secondary" name="clear" type="submit">Clear</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <form method="get" action="">
-                            <div class="mb-1">
-                                <label class="form-label small mb-0">Name</label>
-                                <input class="form-control form-control-sm" type="search" placeholder="Search by Name" name="search" aria-label="Search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-                            </div>
-                            
-                            <div class="mb-1">
-                                <label class="form-label small mb-0">Burial Type</label>
-                                <select class="form-control form-control-sm" name="burial_type">
-                                    <option value="" selected disabled>Select</option>
-                                    <option value="unassigned" <?= isset($_GET['burial_type']) && $_GET['burial_type'] == 'unassigned' ? 'selected' : '' ?>>Unassigned</option>
-                                    <option value="buried" <?= isset($_GET['burial_type']) && $_GET['burial_type'] == 'buried' ? 'selected' : '' ?>>Buried</option>
-                                    <option value="cremated" <?= isset($_GET['burial_type']) && $_GET['burial_type'] == 'cremated' ? 'selected' : '' ?>>Cremated</option>
-                                </select>
-                            </div>
-                            
-                            <div class="mb-1">
-                                <label class="form-label small mb-0">Born</label>
-                                <input class="form-control form-control-sm" type="date" name="date_born" value="<?= isset($_GET['date_born']) ? $_GET['date_born'] : '' ?>">
-                            </div>
-                            
-                            <div class="mb-1">
-                                <label class="form-label small mb-0">Died</label>
-                                <input class="form-control form-control-sm" type="date" name="date_died" value="<?= isset($_GET['date_died']) ? $_GET['date_died'] : '' ?>">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label small mb-0">Burial Date</label>
-                                <input class="form-control form-control-sm" type="date" name="burial_date" value="<?= isset($_GET['burial_date']) ? $_GET['burial_date'] : '' ?>">
-                            </div>
-                            
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
-                                <button class="btn btn-sm btn-outline-secondary" name="clear" type="submit">Clear</button>
-                            </div>
-                        </form>
+                    
+                    <div class="d-grid gap-2">
+                        <div class="d-flex w-100 gap-1">
+                            <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/" style="width: 40px;"><</a>
+                            <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="create.php">Add</a>
+                        </div>
+                        <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/">Back</a>
                     </div>
-                </div>
-                
-                <div class="d-grid gap-2">
-                    <div class="d-flex w-100 gap-1">
-                        <a class="btn btn-darker-grey py-2 border-darker-grey fw-bold" href="/gravekeepercms/" style="width: 40px;"><</a>
-                        <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="create.php">Add</a>
-                    </div>
-                    <a class="btn btn-darker-grey w-100 py-2 border-darker-grey" href="/gravekeepercms/">Back</a>
                 </div>
             </div>
             
-            <!-- Right side - Deceased List -->
+            <!-- Right side - Deceased List with scrollable content -->
             <div class="col-md-9">
-                <div class="w-100 py-2 align-items-center justify-content-between d-flex border rounded p-1 mb-3" style="width: 230px; height:">
-                    <div class="row w-100 ps-3">
-                        <div class="d-grid align-items-center text-wrap fw-bold" style="width:50px">
-                            #
-                        </div>
-                        <div class="col d-grid align-items-center text-wrap text-center fw-bold">
-                            Name
-                        </div>
-                        <div class="col d-grid align-items-center text-wrap text-center fw-bold">
-                            Date
-                        </div>
-                        <div class="col d-grid align-items-center text-wrap text-center fw-bold">
-                            Burial Type
-                        </div>
-                        <div class="col d-grid align-items-center text-wrap text-center fw-bold">
-                            Action 
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="container d-flex gap-2 justify-content-center flex-wrap">
-                    <?php 
-                      if($result->num_rows!=0){
-                        while($row = mysqli_fetch_array($result)){ 
-                            echo "<div href=\"#\" class=\"w-100 py-2 align-items-center justify-content-between d-flex border rounded enlarge p-1\" style=\"width: 230px; height:\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['dec_id']}\">";?>
-                                <div class="row w-100 ps-3">
-                                    <div class=" d-grid align-items-center text-wrap"  style="width:50px">
-                                        <?php echo $row['dec_id'] ?>
-                                    </div>
-                                    <div class="col d-grid align-items-center text-wrap">
-                                        <?php echo $row['deceased_lname'] ?>, <?php echo $row['deceased_fname'] ?>
-                                    </div>
-                                    <div class="col d-grid align-items-center text-wrap text-center">
-                                        <?php echo $row['date_born'] ?> - <?php echo $row['date_died'] ?>
-                                    </div>
-                                    <div class="col d-grid align-items-center text-wrap text-center">
-                                        <?php echo $row['burial_type'] ?>
-                                    </div>
-                                    <?php
-                                    echo "<div class=\"col d-flex align-items-center text-wrap text-center gap-1\">
-                                            <form "; 
-                                            echo "action=\"edit.php\" "; 
-                                            echo "method=\"post\" class=\"col\">
-                                            <input type=\"hidden\" name=\"dec_id\" value=\"{$row['dec_id']}\" />
-                                            <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"submit-update\" onclick=\"event.stopPropagation();\">EDIT</button>
-                                            </form>
-                                            <form "; 
-                                            echo "action=\"store.php?mode=admin\" "; 
-                                            echo "method=\"post\" class=\"col\">
-                                            <input type=\"hidden\" name=\"dec_id\" value=\"{$row['dec_id']}\" />
-                                            <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"submit-delete\" onclick=\"event.stopPropagation();\">DELETE</button>
-                                            </form>
-                                        </div>";
-                                    echo "
-                                </div>
-                            </div>";
-                            echo "<div class=\"modal fade\" id=\"exampleModal{$row['dec_id']}\" tabindex=\"-1\" aria-labelledby=\"reservationModalLabel\" aria-hidden=\"true\">
-                    <div class=\"modal-dialog modal-dialog-centered\">
-                        <div class=\"modal-content\">
-                            <div class=\"modal-header\">
-                                <h5 class=\"modal-title\">Deceased Details</h5>
-                                <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
+                <div class="scrollable-content">
+                    <div class="w-100 py-2 align-items-center justify-content-between d-flex border rounded p-1 mb-3" style="width: 230px; height:">
+                        <div class="row w-100 ps-3">
+                            <div class="d-grid align-items-center text-wrap fw-bold" style="width:50px">
+                                #
                             </div>
-                            <div class=\"modal-body text-wrap\">
-                            <!-- Deceased Info -->
-                                <h5 class=\"fw-bold\">Deceased Info</h5>
-                                <div class=\"text-center mb-3\">
-                                    <img class=\"object-fit-contain border rounded\" src=\"/gravekeepercms/deceased/{$row['deceased_picture']}\" alt=\"\" style=\"width: 100px; height: 100px\">
-                                </div>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Name:</div>
-                                    <div>{$row['deceased_lname']}, {$row['deceased_fname']}</div>
-                                </div>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Date Born:</div>
-                                    <div>{$row['date_born']}</div>
-                                </div>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Date Died:</div>
-                                    <div>{$row['date_died']}</div>
-                                </div>
-                                <hr>
-                                <!-- Burial Details -->
-                                <h5 class=\"fw-bold\">Burial Details</h5>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Burial Date:</div>
-                                    <div>{$row['burial_date']}</div>
-                                </div>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Burial Type:</div>
-                                    <div>{$row['burial_type']}</div>
-                                </div>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Section-Plot:</div>
-                                    <div>{$row['sec_name']} - {$row['plot_desc']}</div>
-                                </div>
-                                <div class=\"d-flex\">
-                                    <div class=\"fw-bold\" style=\"width:140px;\">Price:</div>
-                                    <div>₱{$row['price']}</div>
-                                </div>
+                            <div class="col d-grid align-items-center text-wrap text-center fw-bold">
+                                Name
                             </div>
-                            <div class=\"modal-footer\">
-                                <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Close</button>
+                            <div class="col d-grid align-items-center text-wrap text-center fw-bold">
+                                Date
+                            </div>
+                            <div class="col d-grid align-items-center text-wrap text-center fw-bold">
+                                Burial Type
+                            </div>
+                            <div class="col d-grid align-items-center text-wrap text-center fw-bold">
+                                Action 
                             </div>
                         </div>
                     </div>
-                </div>";
-                        }
-                      }else{
-                        echo "<p class=\"text-center mt-2 fw-bold\">No deceased record found.</p>";
-                      }
-                      ?>
+                    
+                    <div class="container d-flex gap-2 justify-content-center flex-wrap">
+                        <?php 
+                          if($result->num_rows!=0){
+                            while($row = mysqli_fetch_array($result)){ 
+                                echo "<div href=\"#\" class=\"w-100 py-2 align-items-center justify-content-between d-flex border rounded enlarge p-1\" style=\"width: 230px; height:\" data-bs-toggle=\"modal\" data-bs-target=\"#exampleModal{$row['dec_id']}\">";?>
+                                    <div class="row w-100 ps-3">
+                                        <div class=" d-grid align-items-center text-wrap"  style="width:50px">
+                                            <?php echo $row['dec_id'] ?>
+                                        </div>
+                                        <div class="col d-grid align-items-center text-wrap">
+                                            <?php echo $row['deceased_lname'] ?>, <?php echo $row['deceased_fname'] ?>
+                                        </div>
+                                        <div class="col d-grid align-items-center text-wrap text-center">
+                                            <?php echo $row['date_born'] ?> - <?php echo $row['date_died'] ?>
+                                        </div>
+                                        <div class="col d-grid align-items-center text-wrap text-center">
+                                            <?php echo $row['burial_type'] ?>
+                                        </div>
+                                        <?php
+                                        echo "<div class=\"col d-flex align-items-center text-wrap text-center gap-1\">
+                                                <form "; 
+                                                echo "action=\"edit.php\" "; 
+                                                echo "method=\"post\" class=\"col\">
+                                                <input type=\"hidden\" name=\"dec_id\" value=\"{$row['dec_id']}\" />
+                                                <button class=\"col btn btn-warning fw-bold w-100 btn-sm\" name=\"submit-update\" onclick=\"event.stopPropagation();\">EDIT</button>
+                                                </form>
+                                                <form "; 
+                                                echo "action=\"store.php?mode=admin\" "; 
+                                                echo "method=\"post\" class=\"col\">
+                                                <input type=\"hidden\" name=\"dec_id\" value=\"{$row['dec_id']}\" />
+                                                <button class=\"col btn btn-danger fw-bold w-100 btn-sm\" name=\"submit-delete\" onclick=\"event.stopPropagation();\">DELETE</button>
+                                                </form>
+                                            </div>";
+                                        echo "
+                                    </div>
+                                </div>";
+                                echo "<div class=\"modal fade\" id=\"exampleModal{$row['dec_id']}\" tabindex=\"-1\" aria-labelledby=\"reservationModalLabel\" aria-hidden=\"true\">
+                        <div class=\"modal-dialog modal-dialog-centered\">
+                            <div class=\"modal-content\">
+                                <div class=\"modal-header\">
+                                    <h5 class=\"modal-title\">Deceased Details</h5>
+                                    <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
+                                </div>
+                                <div class=\"modal-body text-wrap\">
+                                <!-- Deceased Info -->
+                                    <h5 class=\"fw-bold\">Deceased Info</h5>
+                                    <div class=\"text-center mb-3\">
+                                        <img class=\"object-fit-contain border rounded\" src=\"/gravekeepercms/deceased/{$row['deceased_picture']}\" alt=\"\" style=\"width: 100px; height: 100px\">
+                                    </div>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Name:</div>
+                                        <div>{$row['deceased_lname']}, {$row['deceased_fname']}</div>
+                                    </div>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Date Born:</div>
+                                        <div>{$row['date_born']}</div>
+                                    </div>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Date Died:</div>
+                                        <div>{$row['date_died']}</div>
+                                    </div>
+                                    <hr>
+                                    <!-- Burial Details -->
+                                    <h5 class=\"fw-bold\">Burial Details</h5>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Burial Date:</div>
+                                        <div>{$row['burial_date']}</div>
+                                    </div>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Burial Type:</div>
+                                        <div>{$row['burial_type']}</div>
+                                    </div>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Section-Plot:</div>
+                                        <div>{$row['sec_name']} - {$row['plot_desc']}</div>
+                                    </div>
+                                    <div class=\"d-flex\">
+                                        <div class=\"fw-bold\" style=\"width:140px;\">Price:</div>
+                                        <div>₱{$row['price']}</div>
+                                    </div>
+                                </div>
+                                <div class=\"modal-footer\">
+                                    <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>";
+                            }
+                          }else{
+                            echo "<p class=\"text-center mt-2 fw-bold\">No deceased record found.</p>";
+                          }
+                          ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -290,4 +315,3 @@
 </body>
 <?php include("../includes/footer.php"); ?>
 </html>
-
