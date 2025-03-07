@@ -132,6 +132,12 @@ if ($stmt) {
     </style>
 </head>
 <body>
+<div class="container-fluid px-0 mx-0">
+    <!-- Right half with GraveKeeper and text -->
+    <div class="col-6 d-flex flex-column align-items-center justify-content-center px-0 w-100 py-3" style="background-color: #4b4a4d;">
+        <p class="fw-bold mb-0 h1" style=" color: #d1d1d3;">GraveKeeper</p>
+        <p class="fw-bold h3 text-center mx-3" style="color: #a8a8a9;">Cemetery Management System</p>
+    </div>
 <div class="container mt-4 mb-4">
    
     
@@ -146,19 +152,19 @@ if ($stmt) {
                 <div class="card-body">
                     <form method="get" action="">
                         <!-- Date Placed -->
-                        <div class="mb-3">
+                        <div class="mb-1">
                             <label class="form-label small mb-0">Date Placed</label>
                             <input class="form-control form-control-sm" type="date" name="date_placed" value="<?= isset($_GET['date_placed']) ? $_GET['date_placed'] : '' ?>">
                         </div>
 
                         <!-- Date Reserved -->
-                        <div class="mb-3">
+                        <div class="mb-1">
                             <label class="form-label small mb-0">Date Reserved</label>
                             <input class="form-control form-control-sm" type="date" name="date_reserved" value="<?= isset($_GET['date_reserved']) ? $_GET['date_reserved'] : '' ?>">
                         </div>
 
                         <!-- Section Dropdown -->
-                        <div class="mb-3">
+                        <div class="mb-1">
                             <label class="form-label small mb-0">Section</label>
                             <select class="form-control form-control-sm" name="section">
                                 <option value="" selected disabled>Select</option>
@@ -333,6 +339,7 @@ if ($stmt) {
             </div>
         </div>
     </div>
+</div>
 </div>
 </body>
 <?php include("includes/footer.php"); ?>

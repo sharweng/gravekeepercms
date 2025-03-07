@@ -3,6 +3,7 @@
     $_SESSION['roleDesc'] = "";
   }
 ?>
+<link rel="icon" type="image/x-icon" href="/gravekeepercms/favicon.ico">
 <nav class="site-header border-bottom navbar navbar-expand-lg bg-body-tertiary px-0 mx-0">
   <div class="container-fluid container-lg header-dropdown px-0">
     <a class="navbar-brand fw-bold ms-5" href="/gravekeepercms/">GraveKeeper</a>
